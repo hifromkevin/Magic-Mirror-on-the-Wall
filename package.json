@@ -4,7 +4,9 @@
   "description": "The UI for my Raspberry Pi magic mirror build. ",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon server/server",
+    "build": "webpack --watch",
+    "electron": "electron ."
   },
   "repository": {
     "type": "git",
