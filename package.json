@@ -15,5 +15,22 @@
   "bugs": {
     "url": "https://github.com/hifromkevin/Magic-Mirror-on-the-Wall/issues"
   },
-  "homepage": "https://github.com/hifromkevin/Magic-Mirror-on-the-Wall#readme"
+  "homepage": "https://github.com/hifromkevin/Magic-Mirror-on-the-Wall#readme",
+  "dependencies": {
+    "electron": "^6.0.4",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^3.2.0",
+    "file-loader": "^4.2.0",
+    "node-sass": "^4.12.0",
+    "url-loader": "^2.1.0",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.7"
+  }
 }
