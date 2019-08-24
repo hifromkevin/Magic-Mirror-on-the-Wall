@@ -4,7 +4,7 @@
   "description": "The UI for my Raspberry Pi magic mirror build. ",
   "main": "main.js",
   "scripts": {
-    "start": "nodemon server/index",
+    "start": "nodemon server",
     "build": "webpack --watch",
     "electron": "electron ."
   },
