@@ -1,0 +1,19 @@
+{
+  "name": "magic-mirror-on-the-wall",
+  "version": "1.0.0",
+  "description": "The UI for my Raspberry Pi magic mirror build. ",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hifromkevin/Magic-Mirror-on-the-Wall.git"
+  },
+  "author": "Kevin Lam",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hifromkevin/Magic-Mirror-on-the-Wall/issues"
+  },
+  "homepage": "https://github.com/hifromkevin/Magic-Mirror-on-the-Wall#readme"
+}
