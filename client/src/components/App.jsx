@@ -67,7 +67,10 @@ export default class App extends Component {
 					<div className="clear"></div>
 				</div>
 				<div className="middle">
-					<WelcomeText welcome={this.state.welcome} />
+					<WelcomeText 
+						welcome={this.state.welcome} 
+						random={this.randomNum}
+					/>
 					<div className="clear"></div>
 				</div>
 				<div className="bottom">
