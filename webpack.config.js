@@ -20,7 +20,7 @@ module.exports = {
 			},
 			{
 				test: /\.sass$/,
-				loaders: ['style-loader','css-loader','sass-loader']
+				loaders: ['sylte-loader','css-loader','sass-loader']
 			},
       {
         test: /\.css$/,
