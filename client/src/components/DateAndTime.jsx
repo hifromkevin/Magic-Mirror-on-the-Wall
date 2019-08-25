@@ -12,6 +12,7 @@ export default class DateAndTime extends Component {
 		this.realtimeDateAndTime = this.realtimeDateAndTime.bind(this);
 		this.getTime = this.getTime.bind(this);
 		this.getHour = this.getHour.bind(this);
+		this.lessThanTen = this.lessThanTen.bind(this);
 	}
 
 	UNSAFE_componentWillMount() {
