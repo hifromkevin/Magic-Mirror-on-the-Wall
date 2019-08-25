@@ -38,8 +38,19 @@ export default class App extends Component {
 					title: 'Drawing on Your Face With Sharpies', 
 					author: 'Bob Ross'
 				}
+			],
+			welcome: [
+				'I am mirror',
+				'Oh heyyyyy',
+				'Hey HEY hey'
 			]
 		}
+
+		this.randomNum = this.randomNum.bind(this);
+	}
+
+	randomNum(arr) {
+		return Math.floor(Math.random() * Math.floor(arr.length));
 	}
 	
 	render() {
@@ -56,7 +67,7 @@ export default class App extends Component {
 				</div>
 				<div className="middle">
 					<p>Middle</p>
-					<WelcomeText />
+					<WelcomeText welcome={this.state.welcome} />
 					<div className="clear"></div>
 				</div>
 				<div className="bottom">
