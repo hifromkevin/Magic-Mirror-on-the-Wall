@@ -12,8 +12,10 @@ export default class App extends Component {
 		this.state = {
 			weatherToday: {
 					weather: 'Sunny',
+					location: 'Concord, CA',
 					high: '102',
-					low: '82'
+					low: '82',
+					description: 'Today is a good day to go jump in a lake!'
 			},
 			forecasts: [
 				{
