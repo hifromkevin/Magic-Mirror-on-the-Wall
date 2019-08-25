@@ -59,7 +59,6 @@ export default class App extends Component {
 		return (
 			<div className="main">
 				<div className="top">
-					<p>Top</p>
 					<Weather 
 						weatherToday = {this.state.weatherToday}
 						forecasts = {this.state.forecasts} 
@@ -68,12 +67,10 @@ export default class App extends Component {
 					<div className="clear"></div>
 				</div>
 				<div className="middle">
-					<p>Middle</p>
 					<WelcomeText welcome={this.state.welcome} />
 					<div className="clear"></div>
 				</div>
 				<div className="bottom">
-					<p>Bottom</p>
 					<Headlines 
 						headlines = {this.state.headlines} 
 					/>
