@@ -88,19 +88,16 @@ export default class App extends Component {
 						weatherIcons = {this.state.weatherIcons}
 					/>
 					<DateAndTime />
-					<div className="clear"></div>
 				</div>
 				<div className="middle">
 					<WelcomeText 
 						dadJoke={this.state.dadJoke}
 					/>
-					<div className="clear"></div>
 				</div>
 				<div className="bottom">
 					<Headlines 
 						headlines = {this.state.headlines} 
 					/>
-					<div className="clear"></div>
 				</div>
 			</div>
 		)
