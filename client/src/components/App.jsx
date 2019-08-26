@@ -26,7 +26,7 @@ export default class App extends Component {
 				},
 				{
 					day: 'Tuesday',
-					weather: 'Rainy',
+					weather: 'Rain',
 					high: '62',
 					low: '48'
 				}
@@ -45,7 +45,15 @@ export default class App extends Component {
 				'I am mirror',
 				'Oh heyyyyy',
 				'Hey HEY hey'
-			]
+			],
+			weatherIcons: {
+				Sunny: 'img/sunny.png',
+				Rain: 'img/rain.png',
+				Fog: '',
+				Sleet: '',
+				Hail: '',
+				Snow: '' 
+			}
 		}
 
 		this.randomNum = this.randomNum.bind(this);
@@ -62,6 +70,7 @@ export default class App extends Component {
 					<Weather 
 						weatherToday = {this.state.weatherToday}
 						forecasts = {this.state.forecasts} 
+						weatherIcons = {this.state.weatherIcons}
 					/>
 					<DateAndTime />
 					<div className="clear"></div>
