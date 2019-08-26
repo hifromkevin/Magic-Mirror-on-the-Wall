@@ -52,15 +52,30 @@ export default class App extends Component {
 				Fog: '',
 				Sleet: '',
 				Hail: '',
-				Snow: '' 
-			}
+				Snow: '',
+				Thunderstorm: ''
+			},
+			dadJoke: 'A guy walked into a bar. He said "ouch".'
 		}
 
-		this.randomNum = this.randomNum.bind(this);
+		this.dadJokeAPI = this.dadJokeAPI.bind(this);
 	}
 
-	randomNum(arr) {
-		return Math.floor(Math.random() * Math.floor(arr.length));
+	UNSAFE_componentWillMount() {
+		this.dadJokeAPI();
+	}
+
+	dadJokeAPI() {
+		fetch('https://icanhazdadjoke.com', { headers: { 'Accept': 'application/json' }})
+			.then(res => res.text())
+			.then(data => data)
+			.then(body => {
+				let lol = JSON.parse(body);
+				this.setState({
+					dadJoke: lol.joke
+				})
+			})
+			.catch(err => 'uh oh...')
 	}
 	
 	render() {
@@ -77,8 +92,7 @@ export default class App extends Component {
 				</div>
 				<div className="middle">
 					<WelcomeText 
-						welcome={this.state.welcome} 
-						random={this.randomNum}
+						dadJoke={this.state.dadJoke}
 					/>
 					<div className="clear"></div>
 				</div>
