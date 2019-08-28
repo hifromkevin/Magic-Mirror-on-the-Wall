@@ -69,5 +69,7 @@ bundle.js
 #Illustrator files
 *.ai
 
+#DS_Store
+.DS_Store
 
 
