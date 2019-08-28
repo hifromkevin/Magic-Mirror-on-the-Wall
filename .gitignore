@@ -66,5 +66,8 @@ package-lock.json
 #bundle.js
 bundle.js
 
+#Illustrator files
+*.ai
+
 
 
