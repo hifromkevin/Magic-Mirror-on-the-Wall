@@ -9,17 +9,11 @@
 		vertical-align: middle
 	&__weather
 		display: inline
-		&:before 
-			content: '   '
-			white-space: pre
-		&:after 
+		&:before, &:after  
 			content: '   '
 			white-space: pre
 	&__temperature
 		display: inline
-	&__high
-		&:after 
-			content: '°'
-	&__low
+	&__high, 	&__low
 		&:after 
 			content: '°'
