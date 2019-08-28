@@ -11,7 +11,7 @@ export default class App extends Component {
 
 		this.state = {
 			weatherToday: {
-					weather: 'Sunny',
+					weather: 'Rain',
 					location: 'Concord, CA',
 					high: '102',
 					low: '82',
@@ -26,7 +26,7 @@ export default class App extends Component {
 				},
 				{
 					day: 'Tuesday',
-					weather: 'Rain',
+					weather: 'Windy',
 					high: '62',
 					low: '48'
 				},
@@ -62,11 +62,12 @@ export default class App extends Component {
 				Sunny: 'img/sun.png',
 				Rain: 'img/rain.png',
 				Cloudy: 'img/cloudy.png',
+				Snow: 'img/snow.png',
+				Thunderstorm: 'img/thunderstorms.png',
+				Windy: 'img/wind.png',
 				Fog: '',
 				Sleet: '',
-				Hail: '',
-				Snow: '',
-				Thunderstorm: 'img/thunderstorms.png'
+				Hail: ''
 			},
 			dadJoke: 'A guy walked into a bar. He said "ouch".'
 		}
