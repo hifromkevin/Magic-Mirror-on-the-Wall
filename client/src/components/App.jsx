@@ -29,7 +29,19 @@ export default class App extends Component {
 					weather: 'Rain',
 					high: '62',
 					low: '48'
-				}
+				},
+				{
+					day: 'Wednesday',
+					weather: 'Cloudy',
+					high: '98',
+					low: '72'
+				},
+				{
+					day: 'Thursday',
+					weather: 'Thunderstorm',
+					high: '62',
+					low: '48'
+				},
 			],
 			headlines: [
 				{
@@ -47,13 +59,14 @@ export default class App extends Component {
 				'Hey HEY hey'
 			],
 			weatherIcons: {
-				Sunny: 'img/sunny.png',
+				Sunny: 'img/sun.png',
 				Rain: 'img/rain.png',
+				Cloudy: 'img/cloudy.png',
 				Fog: '',
 				Sleet: '',
 				Hail: '',
 				Snow: '',
-				Thunderstorm: ''
+				Thunderstorm: 'img/thunderstorms.png'
 			},
 			dadJoke: 'A guy walked into a bar. He said "ouch".'
 		}
