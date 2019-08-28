@@ -13,14 +13,13 @@ export default class App extends Component {
 			weatherToday: {
 					weather: 'Rain',
 					location: 'Concord, CA',
-					high: '102',
-					low: '82',
+					tempurature: '102',
 					description: 'Today is a good day to go jump in a lake!'
 			},
 			forecasts: [
 				{
 					day: 'Monday',
-					weather: 'Sunny',
+					weather: 'Clear',
 					high: '98',
 					low: '72'
 				},
@@ -53,19 +52,18 @@ export default class App extends Component {
 					author: 'Bob Ross'
 				}
 			],
-			welcome: [
-				'I am mirror',
-				'Oh heyyyyy',
-				'Hey HEY hey'
-			],
 			weatherIcons: {
-				Sunny: 'img/sun.png',
+				Clear: 'img/sun.png',
 				Rain: 'img/rain.png',
 				Cloudy: 'img/cloudy.png',
 				Snow: 'img/snow.png',
 				Thunderstorm: 'img/thunderstorms.png',
 				Windy: 'img/wind.png',
-				Fog: '',
+				Sunrise: '',
+				PartlyCloudy: '',
+				ClearNight: '',
+				CloudyNight: '',
+				FogOrHaze: '',
 				Sleet: '',
 				Hail: ''
 			},

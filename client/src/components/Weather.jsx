@@ -4,7 +4,7 @@ import Forecasts from './Forecasts.jsx';
 
 const Weather = ({ weatherToday, forecasts, weatherIcons }) => (
 		<div className="weather">
-			<p className="weather__temperature"><span className="weather__low">{weatherToday.low}</span> / <span className="weather__high">{weatherToday.high}</span></p>
+			<p className="weather__temperature">{weatherToday.tempurature}</p>
 			<img 
 				src={weatherIcons[weatherToday.weather]} 
 				alt={weatherToday.weather} 
