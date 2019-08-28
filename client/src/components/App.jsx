@@ -69,14 +69,17 @@ export default class App extends Component {
 				Sleet: '',
 				Hail: ''
 			},
-			dadJoke: 'A guy walked into a bar. He said "ouch".'
+			dadJoke: ''
 		}
 
 		this.dadJokeAPI = this.dadJokeAPI.bind(this);
+		this.hardcodeCoords = this.hardcodeCoords.bind(this);
+		this.practiceGetWeather = this.practiceGetWeather.bind(this);
 	}
 
 	UNSAFE_componentWillMount() {
 		this.dadJokeAPI();
+		this.hardcodeCoords();
 	}
 
 	dadJokeAPI() {
@@ -90,6 +93,19 @@ export default class App extends Component {
 				})
 			})
 			.catch(err => 'uh oh...')
+	}
+
+	hardcodeCoords() {
+		let lat = 38.0296;
+		let lon = -121.9799;
+		this.practiceGetWeather(lat,lon);
+	}
+
+	practiceGetWeather(lat,lon) {
+		fetch(`https://api.weather.gov/points/${lat},${lon}`)
+			.then(res => res.json())
+			.then(data => console.log(data))
+			.catch(err => console.log(err));
 	}
 	
 	render() {
