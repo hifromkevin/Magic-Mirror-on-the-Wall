@@ -106,6 +106,12 @@ export default class App extends Component {
 			.then(res => res.json())
 			.then(data => console.log(data))
 			.catch(err => console.log(err));
+
+
+		// fetch(`https://api.darksky.net/forecast/${config.DarkSkyAPI}/${lat},${lon}`)
+		// 	.then(res => res.json())
+		// 	.then(data => console.log(data))
+		// 	.catch(err => console.log(err));
 	}
 	
 	render() {
