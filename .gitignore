@@ -73,6 +73,6 @@ bundle.js
 .DS_Store
 
 #Hide API keys
-config/index.js
+**/config/index.js
 
 
