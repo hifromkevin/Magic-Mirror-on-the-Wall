@@ -5,6 +5,8 @@ import Headlines from './Headlines.jsx';
 import Weather from './Weather.jsx';
 import WelcomeText from './WelcomeText.jsx';
 
+import config from '../config'
+
 export default class App extends Component {
 	constructor(props) {
 		super(props);
