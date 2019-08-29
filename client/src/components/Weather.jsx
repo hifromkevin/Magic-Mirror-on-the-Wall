@@ -4,10 +4,9 @@ import Forecasts from './Forecasts.jsx';
 
 const Weather = ({ currentWeather, forecasts, weatherIcons, days, weatherTranslator }) => (
 		<div className="weather">
-		{console.log(currentWeather)}
 			<p className="weather__temperature">{currentWeather.temperature}</p>
 			<img 
-				src={weatherIcons[weatherTranslator(currentWeather.weather)]} 
+				src={weatherIcons[weatherTranslator( currentWeather.weather, (new Date(currentWeather.time * 1000).getHours()) )]} 
 				alt={currentWeather.weather} 
 				className="weather__icon" 
 			/>

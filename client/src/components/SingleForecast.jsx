@@ -2,7 +2,6 @@ import React from 'react';
 
 const SingleForecast = ({ forecast, weatherIcons, weatherTranslator, days }) => (
 		<div className="singleForecast">
-		{console.log(days[new Date(forecast.time * 1000).getDay()])}
 			<p className="singleForecast__date">{days[new Date(forecast.time * 1000).getDay()]}</p>
 			<img 
 				src={weatherIcons[weatherTranslator(forecast.summary)]} 
