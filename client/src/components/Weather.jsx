@@ -2,17 +2,17 @@ import React from 'react';
 
 import Forecasts from './Forecasts.jsx';
 
-const Weather = ({ weatherToday, forecasts, weatherIcons }) => (
+const Weather = ({ currentWeather, forecasts, weatherIcons }) => (
 		<div className="weather">
-			<p className="weather__temperature">{weatherToday.tempurature}</p>
+			<p className="weather__temperature">{currentWeather.temperature}</p>
 			<img 
-				src={weatherIcons[weatherToday.weather]} 
-				alt={weatherToday.weather} 
+				src={weatherIcons[currentWeather.weather]} 
+				alt={currentWeather.weather} 
 				className="weather__icon" 
 			/>
-			<p className="weather__location">in {weatherToday.location}</p>			
-			<p className="weather__type">{weatherToday.weather}</p>
-			<p className="weather__description">{weatherToday.description}</p>
+			<p className="weather__location">in {currentWeather.location}</p>			
+			<p className="weather__type">{currentWeather.weather}</p>
+			<p className="weather__description">{currentWeather.description}</p>
 
 			<Forecasts forecasts={forecasts} weatherIcons={weatherIcons} />
 		</div>

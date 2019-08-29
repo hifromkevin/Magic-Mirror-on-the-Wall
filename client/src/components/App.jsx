@@ -12,16 +12,16 @@ export default class App extends Component {
 		super(props);
 
 		this.state = {
-			weatherToday: {
-					weather: 'Rain',
+			currentWeather: {
+					weather: 'Fog',
 					location: 'Concord, CA',
-					tempurature: '102',
+					temperature: '102',
 					description: 'Today is a good day to go jump in a lake!'
 			},
 			forecasts: [
 				{
 					day: 'Monday',
-					weather: 'Clear',
+					weather: 'Fog',
 					high: '98',
 					low: '72'
 				},
@@ -62,10 +62,10 @@ export default class App extends Component {
 				Thunderstorm: 'img/thunderstorms.png',
 				Windy: 'img/wind.png',
 				Sunrise: '',
-				PartlyCloudy: '',
+				PartlyCloudy: 'img/partly-cloudy.png',
 				ClearNight: '',
 				CloudyNight: '',
-				FogOrHaze: '',
+				Fog: 'img/fog.png',
 				Sleet: '',
 				Hail: ''
 			},
@@ -102,16 +102,20 @@ export default class App extends Component {
 	}
 
 	practiceGetWeather(lat,lon) {
-		fetch(`https://api.weather.gov/points/${lat},${lon}`)
+		fetch(`https://api.darksky.net/forecast/${config.DarkSkyAPI}/${lat},${lon}`)
 			.then(res => res.json())
-			.then(data => console.log(data))
+			.then(data => {
+				console.log(data)
+				this.setState({
+					currentWeather: {
+						weather: data.currently.summary,
+						location: 'Concord, CA',
+						temperature: Math.round(data.currently.temperature),
+						description: data.hourly.summary					
+					}
+				})
+			})
 			.catch(err => console.log(err));
-
-
-		// fetch(`https://api.darksky.net/forecast/${config.DarkSkyAPI}/${lat},${lon}`)
-		// 	.then(res => res.json())
-		// 	.then(data => console.log(data))
-		// 	.catch(err => console.log(err));
 	}
 	
 	render() {
@@ -119,7 +123,7 @@ export default class App extends Component {
 			<div className="main">
 				<div className="top">
 					<Weather 
-						weatherToday = {this.state.weatherToday}
+						currentWeather = {this.state.currentWeather}
 						forecasts = {this.state.forecasts} 
 						weatherIcons = {this.state.weatherIcons}
 					/>
