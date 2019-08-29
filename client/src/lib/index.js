@@ -97,4 +97,4 @@ function getUserDataAsync(lat,lon) {
     });
 }
 
-console.log('oh boy', getUserDataAsync(lat,lon))
+console.log('oh boy', getUserDataAsync(lat,lon));
