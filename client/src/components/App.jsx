@@ -83,7 +83,7 @@ export default class App extends Component {
 	}
 
 	getWeather(lat,lon) {
-		// data.daily.data[1] is today, so I can get high, low, etc.
+		// data.daily.data[0] is today (but sometimes it's yesterday?), so I can get high, low, etc.
 		fetch(`https://api.darksky.net/forecast/${config.DarkSkyAPI}/${lat},${lon}`)
 			.then(res => res.json())
 			.then(data => {
@@ -96,7 +96,7 @@ export default class App extends Component {
 						description: data.hourly.summary, 
 						time: data.currently.time	
 					},
-					forecasts: data.daily.data.slice(2)
+					forecasts: data.daily.data.slice(1)
 				})
 			})
 			.catch(err => console.log(err));
