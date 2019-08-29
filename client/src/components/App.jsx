@@ -6,6 +6,8 @@ import Weather from './Weather.jsx';
 import WelcomeText from './WelcomeText.jsx';
 
 import config from '../config'
+// import { hardcodeCoords } from '../lib'
+
 
 export default class App extends Component {
 	constructor(props) {
@@ -74,7 +76,7 @@ export default class App extends Component {
 
 		this.dadJokeAPI = this.dadJokeAPI.bind(this);
 		this.hardcodeCoords = this.hardcodeCoords.bind(this);
-		this.practiceGetWeather = this.practiceGetWeather.bind(this);
+		this.getWeather = this.getWeather.bind(this);
 	}
 
 	UNSAFE_componentWillMount() {
@@ -95,17 +97,10 @@ export default class App extends Component {
 			.catch(err => 'uh oh...')
 	}
 
-	hardcodeCoords() {
-		let lat = 38.0296;
-		let lon = -121.9799;
-		this.practiceGetWeather(lat,lon);
-	}
-
-	practiceGetWeather(lat,lon) {
+	getWeather(lat,lon) {
 		fetch(`https://api.darksky.net/forecast/${config.DarkSkyAPI}/${lat},${lon}`)
 			.then(res => res.json())
 			.then(data => {
-				console.log(data)
 				this.setState({
 					currentWeather: {
 						weather: data.currently.summary,
@@ -116,6 +111,12 @@ export default class App extends Component {
 				})
 			})
 			.catch(err => console.log(err));
+	}
+
+	hardcodeCoords() {
+		let lat = 38.0296;
+		let lon = -121.9799;
+		this.getWeather(lat,lon);
 	}
 	
 	render() {
