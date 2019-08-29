@@ -6,7 +6,7 @@ import Weather from './Weather.jsx';
 import WelcomeText from './WelcomeText.jsx';
 
 import config from '../config'
-// import { hardcodeCoords } from '../lib'
+import { weatherTranslator } from '../lib'
 
 
 export default class App extends Component {
@@ -54,7 +54,6 @@ export default class App extends Component {
 		this.dadJokeAPI = this.dadJokeAPI.bind(this);
 		this.hardcodeCoords = this.hardcodeCoords.bind(this);
 		this.getWeather = this.getWeather.bind(this);
-		this.weatherTranslator = this.weatherTranslator.bind(this);
 	}
 
 	UNSAFE_componentWillMount() {
@@ -80,13 +79,15 @@ export default class App extends Component {
 		let lon = -121.9799;
 		let a = 37.7749;
 		let b = 122.4194;
-		this.getWeather(a,b);
+		this.getWeather(lat,lon);
 	}
 
 	getWeather(lat,lon) {
+		// data.daily.data[1] is today, so I can get high, low, etc.
 		fetch(`https://api.darksky.net/forecast/${config.DarkSkyAPI}/${lat},${lon}`)
 			.then(res => res.json())
 			.then(data => {
+				console.log('cntly', data)
 				this.setState({
 					currentWeather: {
 						weather: data.currently.summary,
@@ -95,50 +96,12 @@ export default class App extends Component {
 						description: data.hourly.summary, 
 						time: data.currently.time	
 					},
-					forecasts: data.daily.data
+					forecasts: data.daily.data.slice(2)
 				})
 			})
 			.catch(err => console.log(err));
 	}
 
-	weatherTranslator(text, time) {
-		let icon;
-
-		text = text.toLowerCase();
-
-	  if (text.includes('partly')) {
-			if (time >= 0 && (time <= 5 || time >= 19)) {
-				icon = 'cloudyNight';
-			} else {
-				icon = 'partlyCloudy';	
-			}	
-		} else if (text.includes('cloudy') ) {
-			if (time >= 0 && (time <= 5 || time >= 19)) {
-				icon = 'cloudyNight';
-			} else {
-				icon = 'cloudy';	
-			}
-		} else if (text.includes('clear') || text.includes('sunny') ) {
-			if (time >= 0 && (time <= 5 || time >= 19)) {
-				icon = 'clearNight';
-			} else {
-				icon = 'clear';	
-			}
-	  } else if (text.includes('foggy') || text.includes('fog') || text.includes('overcast')) {
-	  	icon = 'fog';
-	  } else if (text.includes('rain') || text.includes('flurries') || text.includes('drizzle') ) {
-	  	icon = 'rain';
-	  } else if (text.includes('snow')) {
-	  	icon = 'snow';
-	  } else if (text.includes('windy')) {
-	  	icon = 'wind';
-	  } else if (text.includes('thunder') || text.includes('lightning')) {
-	  	icon = 'thunderstorms';
-	  }
-
-
-	  return icon;
-	}
 
 	render() {
 		return (
@@ -147,7 +110,7 @@ export default class App extends Component {
 					<Weather 
 						currentWeather = {this.state.currentWeather}
 						forecasts = {this.state.forecasts} 
-						weatherTranslator={this.weatherTranslator}
+						weatherTranslator={weatherTranslator}
 						weatherIcons = {this.state.weatherIcons}
 						days = {this.state.days}
 						forecasts = {this.state.forecasts}
