@@ -4,11 +4,6 @@ export default class DateAndTime extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {
-			months:['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-			days:['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-		}
-
 		this.realtimeDateAndTime = this.realtimeDateAndTime.bind(this);
 		this.getTime = this.getTime.bind(this);
 		this.getHour = this.getHour.bind(this);
@@ -29,8 +24,8 @@ export default class DateAndTime extends Component {
 			rawHour: currentDate.getHours(),
 			hours: this.getHour(currentDate.getHours()), 
 			day: currentDate.getDate(),
-			dayOfTheWeek: this.state.days[currentDate.getDay()],
-			month: this.state.months[currentDate.getMonth()],
+			dayOfTheWeek: this.props.days[currentDate.getDay()],
+			month: this.props.months[currentDate.getMonth()],
 			year: currentDate.getFullYear()
 		});
 
