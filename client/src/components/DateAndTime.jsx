@@ -26,6 +26,7 @@ export default class DateAndTime extends Component {
 			date: currentDate,
 			seconds: this.lessThanTen(currentDate.getSeconds()),
 			minutes: this.lessThanTen(currentDate.getMinutes()),
+			rawHour: currentDate.getHours(),
 			hours: this.getHour(currentDate.getHours()), 
 			day: currentDate.getDate(),
 			dayOfTheWeek: this.state.days[currentDate.getDay()],
@@ -41,7 +42,7 @@ export default class DateAndTime extends Component {
 		let minute = this.state.minutes;
 		let hour = this.state.hours;
 
-		let timeOfDay = (hour < 12) ? 'AM' : 'PM';
+		let timeOfDay = (this.state.rawHour < 12) ? 'AM' : 'PM';
 
 		return `${hour}:${minute}:${second} ${timeOfDay}`;
 	}
