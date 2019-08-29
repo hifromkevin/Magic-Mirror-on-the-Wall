@@ -14,48 +14,15 @@ export default class App extends Component {
 		super(props);
 
 		this.state = {
+			months:['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+			days:['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
 			currentWeather: {
 					weather: 'Fog',
 					location: 'Concord, CA',
 					temperature: '102',
 					description: 'Today is a good day to go jump in a lake!'
 			},
-			forecasts: [
-				{
-					day: 'Monday',
-					weather: 'Fog',
-					high: '98',
-					low: '72'
-				},
-				{
-					day: 'Tuesday',
-					weather: 'Windy',
-					high: '62',
-					low: '48'
-				},
-				{
-					day: 'Wednesday',
-					weather: 'Cloudy',
-					high: '98',
-					low: '72'
-				},
-				{
-					day: 'Thursday',
-					weather: 'Thunderstorm',
-					high: '62',
-					low: '48'
-				},
-			],
-			headlines: [
-				{
-					title: 'Corduroy Pillows', 
-					author: 'James Brown'
-				},
-				{
-					title: 'Drawing on Your Face With Sharpies', 
-					author: 'Bob Ross'
-				}
-			],
+			forecasts: [],
 			weatherIcons: {
 				Clear: 'img/sun.png',
 				Rain: 'img/rain.png',
@@ -71,12 +38,23 @@ export default class App extends Component {
 				Sleet: '',
 				Hail: ''
 			},
+			headlines: [
+				{
+					title: 'Corduroy Pillows', 
+					author: 'James Brown'
+				},
+				{
+					title: 'Drawing on Your Face With Sharpies', 
+					author: 'Bob Ross'
+				}
+			],
 			dadJoke: ''
 		}
 
 		this.dadJokeAPI = this.dadJokeAPI.bind(this);
 		this.hardcodeCoords = this.hardcodeCoords.bind(this);
 		this.getWeather = this.getWeather.bind(this);
+		this.weatherTranslator = this.weatherTranslator.bind(this);
 	}
 
 	UNSAFE_componentWillMount() {
@@ -101,16 +79,34 @@ export default class App extends Component {
 		fetch(`https://api.darksky.net/forecast/${config.DarkSkyAPI}/${lat},${lon}`)
 			.then(res => res.json())
 			.then(data => {
+				console.log('wetha', data)
 				this.setState({
 					currentWeather: {
 						weather: data.currently.summary,
 						location: 'Concord, CA',
 						temperature: Math.round(data.currently.temperature),
-						description: data.hourly.summary					
-					}
+						description: data.hourly.summary		
+					},
+					forecasts: data.daily.data
 				})
 			})
 			.catch(err => console.log(err));
+	}
+
+	weatherTranslator(text) {
+		let icon;
+
+		if (this.state.weatherIcons[text]) {
+			icon = text; 
+		} else if (text === 'Mostly cloudy throughout the day.') {
+	    icon = "Cloudy";	
+		} else 		if (text === 'Partly cloudy throughout the day.' || text === 'Partly Cloudy') {
+	    icon = "PartlyCloudy";	
+		} else if (text === 'Clear throughout the day.') {
+	    icon = "Clear";
+	  }
+	  console.log(icon)
+	  return icon;
 	}
 
 	hardcodeCoords() {
@@ -126,9 +122,15 @@ export default class App extends Component {
 					<Weather 
 						currentWeather = {this.state.currentWeather}
 						forecasts = {this.state.forecasts} 
+						weatherTranslator={this.weatherTranslator}
 						weatherIcons = {this.state.weatherIcons}
+						days = {this.state.days}
+						forecasts = {this.state.forecasts}
 					/>
-					<DateAndTime />
+					<DateAndTime 
+						months = {this.state.months}
+						days = {this.state.days}
+					/>
 				</div>
 				<div className="middle">
 					<WelcomeText 
