@@ -33,7 +33,9 @@ export default class App extends Component {
 				sleet: '',
 				hail: ''
 			},
-			dadJoke: ''
+			dadJoke: '',
+			weatherBool: false,
+			newsBool: false
 		}
 
 		this.dadJokeAPI = this.dadJokeAPI.bind(this);
@@ -47,7 +49,6 @@ export default class App extends Component {
 		this.newsAPI();
 		this.getWeather();
 		this.hardcodeCoords();
-
 	}
 
 	UNSAFE_componentDidMount() {
@@ -72,7 +73,8 @@ export default class App extends Component {
 			.then(res => res.json())
 			.then(data => {
 				this.setState({
-					news: data.articles.slice(0,6)
+					news: data.articles.slice(0,6),
+					newsBool: true
 				})
 			})
 			.catch(err => 'uh oh...')
@@ -108,7 +110,8 @@ export default class App extends Component {
 										description: data.hourly.summary, 
 										time: data.currently.time	
 									},
-									forecasts: data.daily.data.slice(1)
+									forecasts: data.daily.data.slice(1),
+									weatherBool: true
 								})
 							})
 							.catch(err => console.log(err));
@@ -120,7 +123,7 @@ export default class App extends Component {
 		return (
 			<div className="main">
 				<div className="top">
-					{this.state.currentWeather && <Weather 
+					<Weather 
 						currentWeather = {this.state.currentWeather}
 						location = {this.state.location}
 						forecasts = {this.state.forecasts} 
@@ -128,7 +131,8 @@ export default class App extends Component {
 						weatherIcons = {this.state.weatherIcons}
 						days = {this.state.days}
 						forecasts = {this.state.forecasts}
-					/>}
+						weatherBool = {this.state.weatherBool}
+					/>
 					<DateAndTime 
 						months = {this.state.months}
 						days = {this.state.days}
@@ -140,9 +144,10 @@ export default class App extends Component {
 					/>
 				</div>
 				<div className="bottom">
-					{this.state.news && <Headlines 
+					<Headlines 
 						news = {this.state.news}
-					/>}
+						newsBool = {this.state.newsBool}
+					/>
 				</div>
 			</div>
 		)
