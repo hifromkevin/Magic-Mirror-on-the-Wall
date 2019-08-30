@@ -1,10 +1,10 @@
 import React from 'react';
 import SingleHeadline from './SingleHeadline.jsx';
 
-const Headlines = ({ headlines }) => (
+const Headlines = ({ news }) => (
 	<div className="headlines">
 		<h1 className="headlines__title">Headlines</h1>
-		{headlines.map((headline, i) => <SingleHeadline headline={headline} key={i} />)}
+		{news.map((headline, i) => <SingleHeadline headline={headline} key={i} />)}
 	</div>
 )
 

@@ -16,12 +16,7 @@ export default class App extends Component {
 		this.state = {
 			months:['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
 			days:['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-			currentWeather: {
-					weather: 'Fog',
-					location: 'Concord, CA',
-					temperature: '102',
-					description: 'Today is a good day to go jump in a lake!'
-			},
+
 			forecasts: [],
 			weatherIcons: {
 				clear: 'img/sun.png',
@@ -38,27 +33,22 @@ export default class App extends Component {
 				sleet: '',
 				hail: ''
 			},
-			headlines: [
-				{
-					title: 'Corduroy Pillows', 
-					author: 'James Brown'
-				},
-				{
-					title: 'Drawing on Your Face With Sharpies', 
-					author: 'Bob Ross'
-				}
-			],
 			dadJoke: ''
 		}
 
 		this.dadJokeAPI = this.dadJokeAPI.bind(this);
+		this.newsAPI = this.newsAPI.bind(this);
 		this.hardcodeCoords = this.hardcodeCoords.bind(this);
 		this.getWeather = this.getWeather.bind(this);
+		this.getLocation = this.getLocation.bind(this);
+		this.showPosition = this.showPosition.bind(this);
 	}
 
 	UNSAFE_componentWillMount() {
 		this.dadJokeAPI();
+		this.newsAPI();
 		this.hardcodeCoords();
+		this.getLocation();
 	}
 
 	dadJokeAPI() {
@@ -74,12 +64,34 @@ export default class App extends Component {
 			.catch(err => 'uh oh...')
 	}
 
+	newsAPI() {
+		fetch(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${config.NewsAPI}`)
+			.then(res => res.json())
+			.then(data => {
+				this.setState({
+					news: data.articles.slice(0,6)
+				})
+			})
+			.catch(err => 'uh oh...')
+	}
+
 	hardcodeCoords() {
 		let lat = 38.0296;
 		let lon = -121.9799;
-		let a = 37.7749;
-		let b = 122.4194;
-		this.getWeather(lat,lon);
+		let a = 37.7912;
+		let b = 122.1919;
+		this.getWeather(a,b);
+	}
+
+	getLocation() {
+	  if (navigator.geolocation) {
+	    navigator.geolocation.getCurrentPosition(this.showPosition);
+	  } else { 
+	    console.log("Geolocation is not supported by this browser.");
+	  }
+	}
+	showPosition(position) {
+	  console.log('?¿', position.coords.latitude,position.coords.longitude);
 	}
 
 	getWeather(lat,lon) {
@@ -87,7 +99,6 @@ export default class App extends Component {
 		fetch(`https://api.darksky.net/forecast/${config.DarkSkyAPI}/${lat},${lon}`)
 			.then(res => res.json())
 			.then(data => {
-				console.log('cntly', data)
 				this.setState({
 					currentWeather: {
 						weather: data.currently.summary,
@@ -107,14 +118,14 @@ export default class App extends Component {
 		return (
 			<div className="main">
 				<div className="top">
-					<Weather 
+					{this.state.currentWeather && <Weather 
 						currentWeather = {this.state.currentWeather}
 						forecasts = {this.state.forecasts} 
 						weatherTranslator={weatherTranslator}
 						weatherIcons = {this.state.weatherIcons}
 						days = {this.state.days}
 						forecasts = {this.state.forecasts}
-					/>
+					/>}
 					<DateAndTime 
 						months = {this.state.months}
 						days = {this.state.days}
@@ -126,9 +137,9 @@ export default class App extends Component {
 					/>
 				</div>
 				<div className="bottom">
-					<Headlines 
-						headlines = {this.state.headlines} 
-					/>
+					{this.state.news && <Headlines 
+						news = {this.state.news}
+					/>}
 				</div>
 			</div>
 		)
