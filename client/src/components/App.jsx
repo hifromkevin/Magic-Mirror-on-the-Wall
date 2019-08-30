@@ -40,15 +40,18 @@ export default class App extends Component {
 		this.newsAPI = this.newsAPI.bind(this);
 		this.hardcodeCoords = this.hardcodeCoords.bind(this);
 		this.getWeather = this.getWeather.bind(this);
-		this.getLocation = this.getLocation.bind(this);
-		this.showPosition = this.showPosition.bind(this);
 	}
 
 	UNSAFE_componentWillMount() {
 		this.dadJokeAPI();
 		this.newsAPI();
+		this.getWeather();
 		this.hardcodeCoords();
-		this.getLocation();
+
+	}
+
+	UNSAFE_componentDidMount() {
+		this.getWeather();
 	}
 
 	dadJokeAPI() {
@@ -83,36 +86,35 @@ export default class App extends Component {
 		this.getWeather(a,b);
 	}
 
-	getLocation() {
-	  if (navigator.geolocation) {
-	    navigator.geolocation.getCurrentPosition(this.showPosition);
-	  } else { 
-	    console.log("Geolocation is not supported by this browser.");
-	  }
-	}
-	showPosition(position) {
-	  console.log('?¿', position.coords.latitude,position.coords.longitude);
-	}
-
-	getWeather(lat,lon) {
-		// data.daily.data[0] is today (but sometimes it's yesterday?), so I can get high, low, etc.
-		fetch(`https://api.darksky.net/forecast/${config.DarkSkyAPI}/${lat},${lon}`)
+	getWeather() {
+		fetch('https://api6.ipify.org?format=json')
 			.then(res => res.json())
 			.then(data => {
-				this.setState({
-					currentWeather: {
-						weather: data.currently.summary,
-						location: 'Concord, CA',
-						temperature: Math.round(data.currently.temperature),
-						description: data.hourly.summary, 
-						time: data.currently.time	
-					},
-					forecasts: data.daily.data.slice(1)
-				})
-			})
-			.catch(err => console.log(err));
-	}
 
+				fetch(`http://api.ipstack.com/${data.ip}?access_key=${config.ipstackAPI}`)
+					.then(res => res.json())
+					.then(data => {
+						this.setState({
+							location: `${data.city}, ${data.region_code}`
+						})
+
+						fetch(`https://api.darksky.net/forecast/${config.DarkSkyAPI}/${data.latitude},${data.longitude}`)
+							.then(res => res.json())
+							.then(data => {
+								this.setState({
+									currentWeather: {
+										weather: data.currently.summary,
+										temperature: Math.round(data.currently.temperature),
+										description: data.hourly.summary, 
+										time: data.currently.time	
+									},
+									forecasts: data.daily.data.slice(1)
+								})
+							})
+							.catch(err => console.log(err));
+					});
+			});
+	}
 
 	render() {
 		return (
@@ -120,6 +122,7 @@ export default class App extends Component {
 				<div className="top">
 					{this.state.currentWeather && <Weather 
 						currentWeather = {this.state.currentWeather}
+						location = {this.state.location}
 						forecasts = {this.state.forecasts} 
 						weatherTranslator={weatherTranslator}
 						weatherIcons = {this.state.weatherIcons}
