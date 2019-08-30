@@ -117,7 +117,7 @@ let weatherTranslator = (text, time) => {
 		} else {
 			icon = 'cloudy';	
 		}
-	} else if (text.includes('clear') || text.includes('sunny') ) {
+	} else if (text.includes('clear') || text.includes('sunny') || text.includes('humid') ) {
 		if (time >= 0 && (time <= 5 || time >= 19)) {
 			icon = 'clearNight';
 		} else {
