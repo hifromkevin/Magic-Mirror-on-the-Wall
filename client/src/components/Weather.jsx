@@ -24,7 +24,7 @@ const Weather = ({ currentWeather, location, forecasts, weatherIcons, days, weat
 			</div>
 		)
 	}
-		return (<div className="weather">WAITING FOR WEATHER</div>);
+		return (<div className="weather"><img className="weather__loading" src="img/weather-loading.gif" alt="loading weather" /></div>);
 	}
 
 export default Weather;
