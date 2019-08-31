@@ -40,7 +40,6 @@ export default class App extends Component {
 
 		this.dadJokeAPI = this.dadJokeAPI.bind(this);
 		this.newsAPI = this.newsAPI.bind(this);
-		this.hardcodeCoords = this.hardcodeCoords.bind(this);
 		this.getWeather = this.getWeather.bind(this);
 	}
 
@@ -48,7 +47,6 @@ export default class App extends Component {
 		this.dadJokeAPI();
 		this.newsAPI();
 		this.getWeather();
-		this.hardcodeCoords();
 	}
 
 	UNSAFE_componentDidMount() {
@@ -78,14 +76,6 @@ export default class App extends Component {
 				})
 			})
 			.catch(err => 'uh oh...')
-	}
-
-	hardcodeCoords() {
-		let lat = 38.0296;
-		let lon = -121.9799;
-		let a = 37.7912;
-		let b = 122.1919;
-		this.getWeather(a,b);
 	}
 
 	getWeather() {
