@@ -8,6 +8,7 @@ import WelcomeText from './WelcomeText.jsx';
 import config from '../config'
 import { weatherTranslator } from '../lib'
 
+let backoff = 1000;
 
 export default class App extends Component {
 	constructor(props) {
@@ -79,32 +80,42 @@ export default class App extends Component {
 	}
 
 	getWeather() {
-		fetch('https://api6.ipify.org?format=json')
+		fetch('https://json.geoiplookup.io/')
 			.then(res => res.json())
 			.then(data => {
-
-				fetch(`http://api.ipstack.com/${data.ip}?access_key=${config.ipstackAPI}`)
-					.then(res => res.json())
+				const { longitude, latitude } = data;
+				fetch(`https://api.darksky.net/forecast/${config.DarkSkyAPI}/${latitude},${longitude}`, )
+					.then(res => {
+						if (res.ok === false) {
+							throw res;
+						} else {
+							backoff = 1000;
+							return res.json();
+						}
+					})
 					.then(data => {
 						this.setState({
-							location: `${data.city}, ${data.region_code}`
+							currentWeather: {
+								weather: data.currently.summary,
+								temperature: Math.round(data.currently.temperature),
+								description: data.hourly.summary, 
+								time: data.currently.time	
+							},
+							forecasts: data.daily.data.slice(1),
+							weatherBool: true
 						})
-
-						fetch(`https://api.darksky.net/forecast/${config.DarkSkyAPI}/${data.latitude},${data.longitude}`)
-							.then(res => res.json())
-							.then(data => {
-								this.setState({
-									currentWeather: {
-										weather: data.currently.summary,
-										temperature: Math.round(data.currently.temperature),
-										description: data.hourly.summary, 
-										time: data.currently.time	
-									},
-									forecasts: data.daily.data.slice(1),
-									weatherBool: true
-								})
-							})
-							.catch(err => console.log(err));
+					})
+					.catch(err => {
+						console.error('something went wrong', err);
+						if (err.status === 400 && backoff < 10000) {
+							console.error('error details:', err);
+							console.error('bad request, trying again in', backoff, 'ms');
+							setTimeout(this.getWeather, backoff)
+							backoff += 1000;
+						}
+						if (err.status === 403) {
+							console.error('call failed, check request and/or API key', err);
+						}
 					});
 			});
 	}
