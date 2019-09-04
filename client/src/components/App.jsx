@@ -79,34 +79,30 @@ export default class App extends Component {
 	}
 
 	getWeather() {
-		fetch('https://api6.ipify.org?format=json')
+		fetch('https://json.geoiplookup.io/')
 			.then(res => res.json())
 			.then(data => {
-
-				fetch(`http://api.ipstack.com/${data.ip}?access_key=${config.ipstackAPI}`)
-					.then(res => res.json())
-					.then(data => {
-						this.setState({
-							location: `${data.city}, ${data.region_code}`
-						})
-
-						fetch(`https://api.darksky.net/forecast/${config.DarkSkyAPI}/${data.latitude},${data.longitude}`)
-							.then(res => res.json())
-							.then(data => {
-								this.setState({
-									currentWeather: {
-										weather: data.currently.summary,
-										temperature: Math.round(data.currently.temperature),
-										description: data.hourly.summary, 
-										time: data.currently.time	
-									},
-									forecasts: data.daily.data.slice(1),
-									weatherBool: true
-								})
+				this.setState({
+					location: `${data.city}, ${data.region}`
+				})
+					fetch(`https://api.darksky.net/forecast/${config.DarkSkyAPI}/${data.latitude},${data.longitude}`)
+						.then(res => res.json())
+						.then(data => {
+							this.setState({
+								currentWeather: {
+									weather: data.currently.summary,
+									temperature: Math.round(data.currently.temperature),
+									description: data.hourly.summary, 
+									time: data.currently.time	
+								},
+								forecasts: data.daily.data.slice(1),
+								weatherBool: true
 							})
-							.catch(err => console.log(err));
-					});
-			});
+						})
+						.catch(err => console.log(err));
+
+			})
+			.catch(err => `Geolocation did not work: ${err}`);
 	}
 
 	render() {

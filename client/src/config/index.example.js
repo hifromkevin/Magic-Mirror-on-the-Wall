@@ -5,3 +5,5 @@ const config = {
   DarkSkyAPI : 'ENTER DARKSKY API KEY HERE', //darksky.net
   NewsAPI: 'ENTER NEWS API KEY HERE' //newsapi.org
 }
+
+export default config;
