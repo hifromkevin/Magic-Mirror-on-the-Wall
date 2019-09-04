@@ -6,4 +6,5 @@ const config = {
   NewsAPI: 'ENTER NEWS API KEY HERE' //newsapi.org
 }
 
-export default config;
+module.exports = config;
+
