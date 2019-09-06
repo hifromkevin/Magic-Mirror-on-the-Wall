@@ -1,48 +1,9 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 
-export default class DateAndTime extends Component {
-	constructor(props) {
-		super(props);
+function DateAndTime({ months, days }) {
+	const [currentDate, setCurrentDate] = useState(new Date());
 
-		this.realtimeDateAndTime = this.realtimeDateAndTime.bind(this);
-		this.getTime = this.getTime.bind(this);
-		this.getHour = this.getHour.bind(this);
-		this.lessThanTen = this.lessThanTen.bind(this);
-	}
-
-	UNSAFE_componentWillMount() {
-		this.realtimeDateAndTime();
-	}
-
-	realtimeDateAndTime() {
-		let currentDate = new Date();
-
-		this.setState({
-			date: currentDate,
-			seconds: this.lessThanTen(currentDate.getSeconds()),
-			minutes: this.lessThanTen(currentDate.getMinutes()),
-			rawHour: currentDate.getHours(),
-			hours: this.getHour(currentDate.getHours()), 
-			day: currentDate.getDate(),
-			dayOfTheWeek: this.props.days[currentDate.getDay()],
-			month: this.props.months[currentDate.getMonth()],
-			year: currentDate.getFullYear()
-		});
-
-		setTimeout(this.realtimeDateAndTime, 1000);
-	}
-
-	getTime() {
-		let second = this.state.seconds;
-		let minute = this.state.minutes;
-		let hour = this.state.hours;
-
-		let timeOfDay = (this.state.rawHour < 12) ? 'AM' : 'PM';
-
-		return `${hour}:${minute}:${second} ${timeOfDay}`;
-	}
-
-	getHour(n) {
+	const getHour = (n) => {
 		if (n > 12) {
 			n = n - 12;
 		} else if (n === 0) {
@@ -52,16 +13,33 @@ export default class DateAndTime extends Component {
 		return n;
 	};
 
-	lessThanTen(n) {
+	const lessThanTen = (n) => {
 		return (n < 10) ? ('0' + n) : n;
 	}
 
-	render() { 
-		return (
-			<div className="dateAndTime">
-				<p className="dateAndTime__time">{this.getTime()}</p>
-				<p className="dateAndTime__date">{this.state.dayOfTheWeek}<br /> {this.state.month} {this.state.day}, {this.state.year}</p>
-			</div>
-		);
-	}
+	const getTime = () => {
+		let second = lessThanTen(currentDate.getSeconds());
+		let minute = lessThanTen(currentDate.getMinutes());
+		let hour = getHour(currentDate.getHours());
+
+		let timeOfDay = (currentDate.getHours() < 12) ? 'AM' : 'PM';
+
+		return `${hour}:${minute}:${second} ${timeOfDay}`;
+	};
+
+	useEffect(() => {
+		setInterval( () => setCurrentDate(new Date()), 1000 );
+	});
+ 
+
+
+	return (
+		<div className="dateAndTime">
+			{console.log()}
+			<p className="dateAndTime__time">{getTime()}</p>
+			<p className="dateAndTime__date">{days[currentDate.getDay()]}<br /> {months[currentDate.getMonth()]} {currentDate.getDate()}, {currentDate.getFullYear()}</p>
+		</div>
+	);
 };
+
+export default DateAndTime;
