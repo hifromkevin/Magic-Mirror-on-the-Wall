@@ -1,3 +1,5 @@
+import 'babel-polyfill'; // required for `async` keyword
+
 import React, { Component } from 'react';
 
 import DateAndTime from './DateAndTime.jsx';
@@ -54,70 +56,66 @@ export default class App extends Component {
 		this.getWeather();
 	}
 
-	dadJokeAPI() {
-		fetch('https://icanhazdadjoke.com', { headers: { 'Accept': 'application/json' }})
-			.then(res => res.text())
-			.then(data => data)
-			.then(body => {
-				let lol = JSON.parse(body);
-				this.setState({
-					dadJoke: lol.joke
-				})
-			})
-			.catch(err => 'uh oh...')
+	getJsonFromUrl = async (url, options) => {
+		const result = await fetch(url, options);
+		if (result.ok === false) {
+			throw result
+		} else {
+			return await result.json();
+		}
 	}
 
-	newsAPI() {
-		fetch(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${config.NewsAPI}`)
-			.then(res => res.json())
-			.then(data => {
-				this.setState({
-					news: data.articles.slice(0,6),
-					newsBool: true
-				})
+	dadJokeAPI = async () => {
+		try {
+			const jokeResult = await fetch('https://icanhazdadjoke.com', { headers: { 'Accept': 'application/json' }});
+			const jokeText = await	jokeResult.text();
+			const lol = JSON.parse(jokeText);
+			this.setState({
+				dadJoke: lol.joke,
 			})
-			.catch(err => 'uh oh...')
+		} catch (err) {
+			console.error('failed to get dad joke', err);
+		}
 	}
 
-	getWeather() {
-		fetch('https://json.geoiplookup.io/')
-			.then(res => res.json())
-			.then(data => {
-				const { longitude, latitude } = data;
-				fetch(`https://api.darksky.net/forecast/${config.DarkSkyAPI}/${latitude},${longitude}`, )
-					.then(res => {
-						if (res.ok === false) {
-							throw res;
-						} else {
-							backoff = 1000;
-							return res.json();
-						}
-					})
-					.then(data => {
-						this.setState({
-							currentWeather: {
-								weather: data.currently.summary,
-								temperature: Math.round(data.currently.temperature),
-								description: data.hourly.summary, 
-								time: data.currently.time	
-							},
-							forecasts: data.daily.data.slice(1),
-							weatherBool: true
-						})
-					})
-					.catch(err => {
-						console.error('something went wrong', err);
-						if (err.status === 400 && backoff < 10000) {
-							console.error('error details:', err);
-							console.error('bad request, trying again in', backoff, 'ms');
-							setTimeout(this.getWeather, backoff)
-							backoff += 1000;
-						}
-						if (err.status === 403) {
-							console.error('call failed, check request and/or API key', err);
-						}
-					});
+	newsAPI = async () => {
+		try {
+			const newsData =	this.getJsonFromUrl(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${config.NewsAPI}`);
+			this.setState({
+				news: newsData.articles.slice(0,6),
+				newsBool: true
 			});
+	  } catch (err) {
+			console.error('call to newsapi.org failed', err);
+		}
+	}
+
+	getWeather = async () => {
+		try {
+			const { longitude, latitude } = await this.getJsonFromUrl(('https://json.geoiplookup.io/'));
+			const weatherData = await this.getJsonFromUrl(`https://api.darksky.net/forecast/${config.DarkSkyAPI}/${latitude},${longitude}`);
+			this.setState({
+				currentWeather: {
+					weather: weatherData.currently.summary,
+					temperature: Math.round(weatherData.currently.temperature),
+					description: weatherData.hourly.summary, 
+					time: weatherData.currently.time	
+				},
+				forecasts: weatherData.daily.data.slice(1),
+				weatherBool: true
+			})
+		} catch (err) {
+			console.error('something went wrong', err);
+			if (err.status === 400 && backoff < 10000) {
+				console.error('error details:', err);
+				console.error('bad request, trying again in', backoff, 'ms');
+				setTimeout(this.getWeather, backoff)
+				backoff += 1000;
+			}
+			if (err.status === 403) {
+				console.error('call failed, check request and/or API key', err);
+			}
+		}
 	}
 
 	render() {
