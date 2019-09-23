@@ -2,8 +2,6 @@ import React from 'react';
 import SingleHeadline from './SingleHeadline.jsx';
 
 const Headlines = ({ news, newsBool }) => {
-	{console.log('newsBool',newsBool)}
-	{console.log('news',news)}
 	if (newsBool) {
 		return (
 			<div className="headlines">
