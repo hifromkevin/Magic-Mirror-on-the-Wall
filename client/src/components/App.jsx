@@ -92,15 +92,16 @@ export default class App extends Component {
 
 	getWeather = async () => {
 		try {
-			const { longitude, latitude } = await this.getJsonFromUrl(('https://json.geoiplookup.io/'));
+			const { longitude, latitude, city, region } = await this.getJsonFromUrl(('https://json.geoiplookup.io/'));
 			const weatherData = await this.getJsonFromUrl(`https://api.darksky.net/forecast/${config.DarkSkyAPI}/${latitude},${longitude}`);
 			this.setState({
 				currentWeather: {
 					weather: weatherData.currently.summary,
 					temperature: Math.round(weatherData.currently.temperature),
 					description: weatherData.hourly.summary, 
-					time: weatherData.currently.time	
+					time: weatherData.currently.time
 				},
+				location: `${city}, ${region}`,
 				forecasts: weatherData.daily.data.slice(1),
 				weatherBool: true
 			})
