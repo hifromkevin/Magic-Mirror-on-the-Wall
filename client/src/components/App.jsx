@@ -40,10 +40,6 @@ export default class App extends Component {
 			weatherBool: false,
 			newsBool: false
 		}
-
-		this.dadJokeAPI = this.dadJokeAPI.bind(this);
-		this.newsAPI = this.newsAPI.bind(this);
-		this.getWeather = this.getWeather.bind(this);
 	}
 
 	UNSAFE_componentWillMount() {
