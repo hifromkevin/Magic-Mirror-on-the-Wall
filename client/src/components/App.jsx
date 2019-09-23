@@ -72,7 +72,7 @@ export default class App extends Component {
 			const lol = JSON.parse(jokeText);
 			this.setState({
 				dadJoke: lol.joke,
-			})
+			});
 		} catch (err) {
 			console.error('failed to get dad joke', err);
 		}
@@ -80,7 +80,7 @@ export default class App extends Component {
 
 	newsAPI = async () => {
 		try {
-			const newsData =	this.getJsonFromUrl(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${config.NewsAPI}`);
+			const newsData = await this.getJsonFromUrl(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${config.NewsAPI}`);
 			this.setState({
 				news: newsData.articles.slice(0,6),
 				newsBool: true
