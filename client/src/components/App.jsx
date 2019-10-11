@@ -8,7 +8,7 @@ import Weather from './Weather.jsx';
 import WelcomeText from './WelcomeText.jsx';
 
 import config from '../config'
-import { weatherTranslator } from '../lib'
+import { weatherTranslator, dadJokeCall, newsCall, weatherCall } from '../lib'
 
 let backoff = 1000;
 
@@ -62,28 +62,19 @@ export default class App extends Component {
 	}
 
 	dadJokeAPI = async () => {
-		try {
-			const jokeResult = await fetch('https://icanhazdadjoke.com', { headers: { 'Accept': 'application/json' }});
-			const jokeText = await	jokeResult.text();
-			const lol = JSON.parse(jokeText);
-			this.setState({
-				dadJoke: lol.joke,
-			});
-		} catch (err) {
-			console.error('failed to get dad joke', err);
-		}
+		let jokeData = await dadJokeCall();
+
+		this.setState({
+			dadJoke: jokeData.joke
+		});
 	}
 
 	newsAPI = async () => {
-		try {
-			const newsData = await this.getJsonFromUrl(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${config.NewsAPI}`);
-			this.setState({
-				news: newsData.articles.slice(0,6),
-				newsBool: true
-			});
-	  } catch (err) {
-			console.error('call to newsapi.org failed', err);
-		}
+		let newsData = await newsCall();
+		this.setState({
+			news: newsData.articles.slice(0,6),
+			newsBool: true
+		});
 	}
 
 	getWeather = async () => {
