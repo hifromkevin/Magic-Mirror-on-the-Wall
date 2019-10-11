@@ -78,32 +78,18 @@ export default class App extends Component {
 	}
 
 	getWeather = async () => {
-		try {
-			const { longitude, latitude, city, region } = await this.getJsonFromUrl(('https://json.geoiplookup.io/'));
-			const weatherData = await this.getJsonFromUrl(`https://api.darksky.net/forecast/${config.DarkSkyAPI}/${latitude},${longitude}`);
+		let weatherData = await weatherCall();
 			this.setState({
 				currentWeather: {
-					weather: weatherData.currently.summary,
-					temperature: Math.round(weatherData.currently.temperature),
-					description: weatherData.hourly.summary, 
-					time: weatherData.currently.time
+					weather: weatherData[1].currently.summary,
+					temperature: Math.round(weatherData[1].currently.temperature),
+					description: weatherData[1].hourly.summary, 
+					time: weatherData[1].currently.time
 				},
-				location: `${city}, ${region}`,
-				forecasts: weatherData.daily.data.slice(1),
+				location: `${weatherData[0].city}, ${weatherData[0].region}`,
+				forecasts: weatherData[1].daily.data.slice(1),
 				weatherBool: true
 			})
-		} catch (err) {
-			console.error('something went wrong', err);
-			if (err.status === 400 && backoff < 10000) {
-				console.error('error details:', err);
-				console.error('bad request, trying again in', backoff, 'ms');
-				setTimeout(this.getWeather, backoff)
-				backoff += 1000;
-			}
-			if (err.status === 403) {
-				console.error('call failed, check request and/or API key', err);
-			}
-		}
 	}
 
 	render() {
