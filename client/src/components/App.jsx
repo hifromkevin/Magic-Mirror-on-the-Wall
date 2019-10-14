@@ -7,8 +7,8 @@ import Headlines from './Headlines.jsx';
 import Weather from './Weather.jsx';
 import WelcomeText from './WelcomeText.jsx';
 
-import config from '../config'
-import { weatherTranslator, dadJokeCall, newsCall, weatherCall } from '../lib';
+import config from '../config';
+import { weatherTranslator, dadJokeCall, newsCall, weatherCall, weatherIcons, months, days } from '../lib';
 
 let backoff = 1000;
 
@@ -17,25 +17,7 @@ export default class App extends Component {
 		super(props);
 
 		this.state = {
-			months:['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-			days:['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-
 			forecasts: [],
-			weatherIcons: {
-				clear: 'img/sun.png',
-				partlyCloudy: 'img/partly-cloudy.png',
-				rain: 'img/rain.png',
-				cloudy: 'img/cloudy.png',
-				snow: 'img/snow.png',
-				thunderstorm: 'img/thunderstorms.png',
-				wind: 'img/wind.png',
-				fog: 'img/fog.png',
-				sunrise: '',
-				clearNight: 'img/clear-night.png',
-				cloudyNight: 'img/cloudy-night.png',
-				sleet: '',
-				hail: ''
-			},
 			dadJoke: '',
 			weatherBool: false,
 			newsBool: false
@@ -79,7 +61,6 @@ export default class App extends Component {
 
 	getWeather = async () => {
     let weatherData = await weatherCall();
-    console.log('!!!', weatherData)
 			this.setState({
 				currentWeather: {
 					weather: weatherData[2].currently.summary,
@@ -102,14 +83,14 @@ export default class App extends Component {
 						location = {this.state.location}
 						forecasts = {this.state.forecasts} 
 						weatherTranslator={weatherTranslator}
-						weatherIcons = {this.state.weatherIcons}
-						days = {this.state.days}
+						weatherIcons = {weatherIcons}
+						days = {days}
 						forecasts = {this.state.forecasts}
 						weatherBool = {this.state.weatherBool}
 					/>
 					<DateAndTime 
-						months = {this.state.months}
-						days = {this.state.days}
+						months = {months}
+						days = {days}
 					/>
 				</div>
 				<div className="middle">

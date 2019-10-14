@@ -1,5 +1,4 @@
 let config = require('../config');
-console.log('CON', config, config.newsAPI)
 
 let getJsonFromUrl = async (url, options) => {
 		const result = await fetch(url, options);
@@ -30,29 +29,15 @@ let newsCall = async () => {
   }
 }
 
-// let weatherCall = async () => {
-// 	return fetch('https://json.geoiplookup.io/')
-// 					.then(res => res.json())
-// 					.then(data => {
-// 						return fetch(`https://api.darksky.net/forecast/${config.default.DarkSkyAPI}/${data.latitude},${data.longitude}`)
-// 										.then(res => res.json())
-// 										.then(dataWeather => [data, dataWeather])
-// 										.catch(err => console.log('Hey, how is the weather? ', err))
-// 					})
-// 					.catch(err => console.log('No IP for you ', err))
-// }
-
 let weatherCall = async () => {
   try {
       const { longitude, latitude, city, region } = await getJsonFromUrl(('https://json.geoiplookup.io/'));
-      console.log(latitude, longitude);
       const weatherData = await getJsonFromUrl(`https://api.darksky.net/forecast/${config.default.DarkSkyAPI}/${latitude},${longitude}`);
       return [city, region, weatherData];
   } catch (err) {
     console.error('Hey, how is the weather? ', err);
   }
 }
-
 
 let weatherTranslator = (text, time) => {
 	let icon;
@@ -92,8 +77,32 @@ let weatherTranslator = (text, time) => {
   return icon;
 }
 
+let weatherIcons = {
+  clear: 'img/sun.png',
+  partlyCloudy: 'img/partly-cloudy.png',
+  rain: 'img/rain.png',
+  cloudy: 'img/cloudy.png',
+  snow: 'img/snow.png',
+  thunderstorm: 'img/thunderstorms.png',
+  wind: 'img/wind.png',
+  fog: 'img/fog.png',
+  sunrise: '',
+  clearNight: 'img/clear-night.png',
+  cloudyNight: 'img/cloudy-night.png',
+  sleet: '',
+  hail: ''
+};
+
+const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
 
 exports.weatherTranslator = weatherTranslator;
 exports.dadJokeCall = dadJokeCall;
 exports.newsCall = newsCall;
 exports.weatherCall = weatherCall;
+exports.weatherIcons = weatherIcons;
+exports.months = months;
+exports.days = days;
+
+
