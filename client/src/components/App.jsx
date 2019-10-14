@@ -8,7 +8,7 @@ import Weather from './Weather.jsx';
 import WelcomeText from './WelcomeText.jsx';
 
 import config from '../config'
-import { weatherTranslator, dadJokeCall, newsCall, weatherCall } from '../lib'
+import { weatherTranslator, dadJokeCall, newsCall, weatherCall } from '../lib';
 
 let backoff = 1000;
 
@@ -78,16 +78,17 @@ export default class App extends Component {
 	}
 
 	getWeather = async () => {
-		let weatherData = await weatherCall();
+    let weatherData = await weatherCall();
+    console.log('!!!', weatherData)
 			this.setState({
 				currentWeather: {
-					weather: weatherData[1].currently.summary,
-					temperature: Math.round(weatherData[1].currently.temperature),
-					description: weatherData[1].hourly.summary, 
-					time: weatherData[1].currently.time
+					weather: weatherData[2].currently.summary,
+					temperature: Math.round(weatherData[2].currently.temperature),
+					description: weatherData[2].hourly.summary, 
+					time: weatherData[2].currently.time
 				},
-				location: `${weatherData[0].city}, ${weatherData[0].region}`,
-				forecasts: weatherData[1].daily.data.slice(1),
+				location: `${weatherData[0]}, ${weatherData[1]}`,
+				forecasts: weatherData[2].daily.data.slice(1),
 				weatherBool: true
 			})
 	}

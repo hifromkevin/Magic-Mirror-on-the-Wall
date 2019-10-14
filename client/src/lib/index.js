@@ -1,38 +1,56 @@
 let config = require('../config');
+console.log('CON', config, config.newsAPI)
 
-// let getJsonFromUrl = async (url, options) => {
-// 		const result = await fetch(url, options);
-// 		if (result.ok === false) {
-// 			throw result
-// 		} else {
-// 			return await result.json();
-// 		}
-// 	}
+let getJsonFromUrl = async (url, options) => {
+		const result = await fetch(url, options);
+		if (result.ok === false) {
+			throw result
+		} else {
+			return await result.json();
+		}
+	}
 
-let dadJokeCall = () => {
-	return fetch('https://icanhazdadJoke.com', { headers: { 'Accept': 'application/json' }})
-		.then(res => res.json())
-		.then(data => data)
-		.catch(err => console.log('What do you get when you ask for a dad joke?', err))
+let dadJokeCall = async () => {
+  try {
+   const jokeResult = await fetch('https://icanhazdadjoke.com', { headers: { 'Accept': 'application/json' }});
+   const jokeText = await jokeResult.text();
+   const dadJoke = JSON.parse(jokeText);
+   return dadJoke;
+  } catch (err) {
+    console.error('What do you get when you ask for a dad joke? ', err);
+  }
 }
 
-let newsCall = () => {
-	return fetch(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${config.default.NewsAPI}`)
-		.then(res => res.json())
-		.then(data => data)
-		.catch(err => console.log('Good news? Nothing. Bad news? ', err))
+let newsCall = async () => {
+  try {
+   const newsData = await getJsonFromUrl(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${config.default.NewsAPI}`);
+   return newsData;
+  } catch (err) {
+    console.error('Today\'s headline: ', err);
+  }
 }
+
+// let weatherCall = async () => {
+// 	return fetch('https://json.geoiplookup.io/')
+// 					.then(res => res.json())
+// 					.then(data => {
+// 						return fetch(`https://api.darksky.net/forecast/${config.default.DarkSkyAPI}/${data.latitude},${data.longitude}`)
+// 										.then(res => res.json())
+// 										.then(dataWeather => [data, dataWeather])
+// 										.catch(err => console.log('Hey, how is the weather? ', err))
+// 					})
+// 					.catch(err => console.log('No IP for you ', err))
+// }
 
 let weatherCall = async () => {
-	return fetch('https://json.geoiplookup.io/')
-					.then(res => res.json())
-					.then(data => {
-						return fetch(`https://api.darksky.net/forecast/${config.default.DarkSkyAPI}/${data.latitude},${data.longitude}`)
-										.then(res => res.json())
-										.then(dataWeather => [data, dataWeather])
-										.catch(err => console.log('Hey, how is the weather? ', err))
-					})
-					.catch(err => console.log('No IP for you ', err))
+  try {
+      const { longitude, latitude, city, region } = await getJsonFromUrl(('https://json.geoiplookup.io/'));
+      console.log(latitude, longitude);
+      const weatherData = await getJsonFromUrl(`https://api.darksky.net/forecast/${config.default.DarkSkyAPI}/${latitude},${longitude}`);
+      return [city, region, weatherData];
+  } catch (err) {
+    console.error('Hey, how is the weather? ', err);
+  }
 }
 
 
