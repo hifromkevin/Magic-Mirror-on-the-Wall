@@ -112,6 +112,7 @@ const dateInfo = {
   days: days
 }
 
+
 exports.apiCalls = apiCalls;
 exports.weatherInfo = weatherInfo;
 exports.dateInfo = dateInfo;
