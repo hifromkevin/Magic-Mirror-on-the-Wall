@@ -8,7 +8,7 @@ import Weather from './Weather.jsx';
 import WelcomeText from './WelcomeText.jsx';
 
 import config from '../config';
-import { weatherTranslator, dadJokeCall, newsCall, weatherCall, weatherIcons, months, days } from '../lib';
+import { weatherTranslator, weatherIcons, months, days, apiCalls } from '../lib';
 
 export default class App extends Component {
 	constructor(props) {
@@ -42,7 +42,7 @@ export default class App extends Component {
 	}
 
 	dadJokeAPI = async () => {
-		let jokeData = await dadJokeCall();
+		let jokeData = await apiCalls.joke();
 
 		this.setState({
 			dadJoke: jokeData.joke
@@ -50,7 +50,7 @@ export default class App extends Component {
 	}
 
 	newsAPI = async () => {
-		let newsData = await newsCall();
+		let newsData = await apiCalls.news();
 		this.setState({
 			news: newsData.articles.slice(0,6),
 			newsBool: true
@@ -58,7 +58,7 @@ export default class App extends Component {
 	}
 
 	getWeather = async () => {
-    let [city, state, weatherData] = await weatherCall();
+    let [city, state, weatherData] = await apiCalls.weather();
 			this.setState({
 				currentWeather: {
 					weather: weatherData.currently.summary,

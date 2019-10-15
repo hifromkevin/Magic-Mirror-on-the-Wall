@@ -96,6 +96,12 @@ let weatherIcons = {
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
+const apiCalls = {
+  weather: weatherCall,
+  joke: dadJokeCall, 
+  news: newsCall 
+}
+
 
 exports.weatherTranslator = weatherTranslator;
 exports.dadJokeCall = dadJokeCall;
@@ -104,5 +110,6 @@ exports.weatherCall = weatherCall;
 exports.weatherIcons = weatherIcons;
 exports.months = months;
 exports.days = days;
+exports.apiCalls = apiCalls;
 
 
