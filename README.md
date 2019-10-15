@@ -5,11 +5,11 @@ _The UI for my Raspberry Pi magic mirror build_
 
 ## Requirements
 Node (Suggested v11.13.0)
-- https://nodejs.org/en/download/
+  - https://nodejs.org/en/download/
 NPM (Suggestd v6.12.0)
 Electron (suggestd v6.0.3)
-- npm install electron -g
-- npm install electron --save-dev
+  - npm install electron -g
+  - npm install electron --save-dev
 
 ## Installing Dependencies
 Open three tabs on your terminal. 
