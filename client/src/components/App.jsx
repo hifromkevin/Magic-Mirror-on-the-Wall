@@ -8,7 +8,7 @@ import Weather from './Weather.jsx';
 import WelcomeText from './WelcomeText.jsx';
 
 import config from '../config';
-import { weatherTranslator, weatherIcons, months, days, apiCalls } from '../lib';
+import { apiCalls, weatherInfo, dateInfo } from '../lib';
 
 export default class App extends Component {
 	constructor(props) {
@@ -80,15 +80,15 @@ export default class App extends Component {
 						currentWeather = {this.state.currentWeather}
 						location = {this.state.location}
 						forecasts = {this.state.forecasts} 
-						weatherTranslator={weatherTranslator}
-						weatherIcons = {weatherIcons}
-						days = {days}
+						weatherTranslator={weatherInfo.weatherTranslator}
+						weatherIcons = {weatherInfo.weatherIcons}
+						days = {dateInfo.days}
 						forecasts = {this.state.forecasts}
 						weatherBool = {this.state.weatherBool}
 					/>
 					<DateAndTime 
-						months = {months}
-						days = {days}
+						months = {dateInfo.months}
+						days = {dateInfo.days}
 					/>
 				</div>
 				<div className="middle">

@@ -102,14 +102,18 @@ const apiCalls = {
   news: newsCall 
 }
 
+const weatherInfo = {
+  weatherTranslator: weatherTranslator,
+  weatherIcons: weatherIcons
+}
 
-exports.weatherTranslator = weatherTranslator;
-exports.dadJokeCall = dadJokeCall;
-exports.newsCall = newsCall;
-exports.weatherCall = weatherCall;
-exports.weatherIcons = weatherIcons;
-exports.months = months;
-exports.days = days;
+const dateInfo = {
+  months: months,
+  days: days
+}
+
 exports.apiCalls = apiCalls;
+exports.weatherInfo = weatherInfo;
+exports.dateInfo = dateInfo;
 
 
