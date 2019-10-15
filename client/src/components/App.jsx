@@ -1,5 +1,4 @@
 import 'babel-polyfill'; // required for `async` keyword
-
 import React, { Component } from 'react';
 
 import DateAndTime from './DateAndTime.jsx';
@@ -7,7 +6,6 @@ import Headlines from './Headlines.jsx';
 import Weather from './Weather.jsx';
 import WelcomeText from './WelcomeText.jsx';
 
-import config from '../config';
 import { apiCalls, weatherInfo, dateInfo } from '../lib';
 
 export default class App extends Component {
