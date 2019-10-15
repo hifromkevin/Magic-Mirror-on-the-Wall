@@ -11,7 +11,6 @@ function DateAndTime({ months, days }) {
  
 	return (
 		<div className="dateAndTime">
-			{console.log()}
 			<p className="dateAndTime__time">{getTime(currentDate)}</p>
 			<p className="dateAndTime__date">{days[currentDate.getDay()]}<br /> {months[currentDate.getMonth()]} {currentDate.getDate()}, {currentDate.getFullYear()}</p>
 		</div>
