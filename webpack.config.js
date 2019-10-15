@@ -12,12 +12,18 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /\.jsx$/,
-				loader: 'babel-loader',
+        test: /\.jsx?$/, 
+        resolve: {
+          extensions: [".js", ".jsx"],
+          enforceExtension: false
+        },
 				query: {
 					presets: ['@babel/preset-env', '@babel/preset-react'],
 					plugins: ['@babel/plugin-proposal-class-properties']
-				}
+        },
+        use: {
+          loader: 'babel-loader'
+        }
 			},
 			{
 				test: /\.sass$/,
@@ -32,5 +38,5 @@ module.exports = {
         loader: 'url-loader?limit=100000'
       }
 		]
-	}
+  }
 };
