@@ -10,8 +10,6 @@ import WelcomeText from './WelcomeText.jsx';
 import config from '../config';
 import { weatherTranslator, dadJokeCall, newsCall, weatherCall, weatherIcons, months, days } from '../lib';
 
-let backoff = 1000;
-
 export default class App extends Component {
 	constructor(props) {
 		super(props);
@@ -60,16 +58,16 @@ export default class App extends Component {
 	}
 
 	getWeather = async () => {
-    let weatherData = await weatherCall();
+    let [city, state, weatherData] = await weatherCall();
 			this.setState({
 				currentWeather: {
-					weather: weatherData[2].currently.summary,
-					temperature: Math.round(weatherData[2].currently.temperature),
-					description: weatherData[2].hourly.summary, 
-					time: weatherData[2].currently.time
+					weather: weatherData.currently.summary,
+					temperature: Math.round(weatherData.currently.temperature),
+					description: weatherData.hourly.summary, 
+					time: weatherData.currently.time
 				},
-				location: `${weatherData[0]}, ${weatherData[1]}`,
-				forecasts: weatherData[2].daily.data.slice(1),
+				location: `${city}, ${state}`,
+				forecasts: weatherData.daily.data.slice(1),
 				weatherBool: true
 			})
 	}
