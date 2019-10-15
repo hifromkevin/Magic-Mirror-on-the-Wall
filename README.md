@@ -32,7 +32,7 @@ npm run electron
 ## Overview
 
 This is the UI for my Magic Mirror, powered by a Raspberry Pi. This is a UI built to:
-- Display the weather
+- Display the weather with custom icons (made by ME!)
 - Display the time and date
 - Six recent news headlines
 - And, most importantly, a random dad joke
