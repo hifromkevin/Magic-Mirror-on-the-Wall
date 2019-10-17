@@ -5,11 +5,17 @@ _The UI for my Raspberry Pi magic mirror build_
 
 ## Requirements
 Node (Suggested v11.13.0)
-- https://nodejs.org/en/download/ <br />
-NPM (Suggestd v6.12.0)
-Electron (suggestd v6.0.3)
+  - https://nodejs.org/en/download/ 
+
+NPM (Suggested v6.12.0)
+Electron (Suggested v6.0.3)
   - npm install electron -g
-  - npm install electron --save-dev
+
+API Keys:
+1. Go to the following websites and request an API key:
+  - darksky.net
+  - newsapi.org
+2. Go to config/index.example.js and paste in your API key. Then, change the name of the file to index.js. 
 
 ## Installing Dependencies
 Open three tabs on your terminal. 
