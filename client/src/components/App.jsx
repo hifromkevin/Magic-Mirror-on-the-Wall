@@ -26,10 +26,6 @@ export default class App extends Component {
 		this.getWeather();
 	}
 
-	UNSAFE_componentDidMount() {
-		this.getWeather();
-	}
-
 	getJsonFromUrl = async (url, options) => {
 		const result = await fetch(url, options);
 		if (result.ok === false) {
@@ -102,5 +98,5 @@ export default class App extends Component {
 				</div>
 			</div>
 		)
-	}
-} 
+	};
+};

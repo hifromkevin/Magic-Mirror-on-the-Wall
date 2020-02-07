@@ -18,7 +18,6 @@ const getTime = (currentDate) => {
   let hour = getHour(currentDate.getHours());
 
   let timeOfDay = (currentDate.getHours() < 12) ? 'AM' : 'PM';
-
   return `${hour}:${minute}:${second} ${timeOfDay}`;
 };
 
