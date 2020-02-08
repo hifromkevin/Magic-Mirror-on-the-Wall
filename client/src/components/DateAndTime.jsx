@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { getTime } from '../lib';
 
 function DateAndTime({ months, days }) {
-	console.log(useState(new Date()))
 	const [currentDate, setCurrentDate] = useState(new Date());
 
 	useEffect(() => {
