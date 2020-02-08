@@ -9,7 +9,7 @@ import WelcomeText from './WelcomeText.jsx';
 import { apiCalls, weatherInfo, dateInfo } from '../lib';
 
 
-function App() {
+const App = () => {
 	const [mirrorInfo, setMirrorInfo] = useState({
 			weatherBool: false,
 			newsBool: false

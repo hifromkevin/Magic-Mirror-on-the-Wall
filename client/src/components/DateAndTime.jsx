@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import { getTime } from '../lib';
 
-function DateAndTime({ months, days }) {
+const DateAndTime =({ months, days }) => {
 	const [currentDate, setCurrentDate] = useState(new Date());
 
 	useEffect(() => {
