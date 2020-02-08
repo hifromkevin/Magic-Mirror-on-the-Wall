@@ -1,5 +1,5 @@
 import 'babel-polyfill'; // required for `async` keyword
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 
 import DateAndTime from './DateAndTime.jsx';
 import Headlines from './Headlines.jsx';
@@ -8,25 +8,16 @@ import WelcomeText from './WelcomeText.jsx';
 
 import { apiCalls, weatherInfo, dateInfo } from '../lib';
 
-export default class App extends Component {
-	constructor(props) {
-    super(props);
 
-		this.state = {
-			forecasts: [],
-			dadJoke: '',
+function App() {
+	const [mirrorInfo, setMirrorInfo] = useState({
 			weatherBool: false,
 			newsBool: false
-		}
-	}
+	});
 
-	UNSAFE_componentWillMount() {
-		this.dadJokeAPI();
-		this.newsAPI();
-		this.getWeather();
-	}
 
-	getJsonFromUrl = async (url, options) => {
+
+	const getJsonFromUrl = async (url, options) => {
 		const result = await fetch(url, options);
 		if (result.ok === false) {
 			throw result
@@ -35,26 +26,34 @@ export default class App extends Component {
 		}
 	}
 
-	dadJokeAPI = async () => {
+	const dadJokeAPI = async () => {
 		let jokeData = await apiCalls.joke();
 
-		this.setState({
-			dadJoke: jokeData.joke
-		});
+		setMirrorInfo(state => ({ ...state, dadJoke: jokeData.joke}))
+
+		// this.setState({
+		// 	dadJoke: jokeData.joke
+		// });
 	}
 
-	newsAPI = async () => {
+	const newsAPI = async () => {
 		let newsData = await apiCalls.news();
-		this.setState({
+
+		setMirrorInfo(state => ({ ...state,
 			news: newsData.articles.slice(0,6),
 			newsBool: true
-		});
+			}))
+		// this.setState({
+		// 	news: newsData.articles.slice(0,6),
+		// 	newsBool: true
+		// });
 	}
 
-	getWeather = async () => {
+	const getWeather = async () => {
     let [city, state, weatherData] = await apiCalls.weather();
-			this.setState({
-				currentWeather: {
+
+			setMirrorInfo(state => ({ ...state,
+					currentWeather: {
 					weather: weatherData.currently.summary,
 					temperature: Math.round(weatherData.currently.temperature),
 					description: weatherData.hourly.summary, 
@@ -63,40 +62,60 @@ export default class App extends Component {
 				location: `${city}, ${state}`,
 				forecasts: weatherData.daily.data.slice(1),
 				weatherBool: true
-			})
+			}))
+			// this.setState({
+			// 	currentWeather: {
+			// 		weather: weatherData.currently.summary,
+			// 		temperature: Math.round(weatherData.currently.temperature),
+			// 		description: weatherData.hourly.summary, 
+			// 		time: weatherData.currently.time
+			// 	},
+			// 	location: `${city}, ${state}`,
+			// 	forecasts: weatherData.daily.data.slice(1),
+			// 	weatherBool: true
+			// })
 	}
 
-	render() {
-		return (
-			<div className="main">
-				<div className="top">
-					<Weather 
-						currentWeather = {this.state.currentWeather}
-						location = {this.state.location}
-						forecasts = {this.state.forecasts} 
-						weatherTranslator={weatherInfo.weatherTranslator}
-						weatherIcons = {weatherInfo.weatherIcons}
-						days = {dateInfo.days}
-						forecasts = {this.state.forecasts}
-						weatherBool = {this.state.weatherBool}
-					/>
-					<DateAndTime 
-						months = {dateInfo.months}
-						days = {dateInfo.days}
-					/>
-				</div>
-				<div className="middle">
-					<WelcomeText 
-						dadJoke={this.state.dadJoke}
-					/>
-				</div>
-				<div className="bottom">
-					<Headlines 
-						news = {this.state.news}
-						newsBool = {this.state.newsBool}
-					/>
-				</div>
+	useEffect(() => {
+		dadJokeAPI();
+	}, []);
+	useEffect(() => {
+		newsAPI();
+	}, []);
+	useEffect(() => {
+		getWeather();
+	}, []);
+
+	return (
+		<div className="main">
+			<div className="top">
+				<Weather 
+					currentWeather = {mirrorInfo.currentWeather}
+					location = {mirrorInfo.location}
+					forecasts = {mirrorInfo.forecasts} 
+					weatherTranslator={weatherInfo.weatherTranslator}
+					weatherIcons = {weatherInfo.weatherIcons}
+					days = {dateInfo.days}
+					forecasts = {mirrorInfo.forecasts}
+					weatherBool = {mirrorInfo.weatherBool}
+				/>
+				<DateAndTime 
+					months = {dateInfo.months}
+					days = {dateInfo.days}
+				/>
 			</div>
-		)
-	};
-};
+			<div className="middle">
+				<WelcomeText 
+					dadJoke={mirrorInfo.dadJoke}
+				/>
+			</div>
+			<div className="bottom">
+				<Headlines 
+					news = {mirrorInfo.news}
+					newsBool = {mirrorInfo.newsBool}
+				/>
+			</div>
+		</div>
+	)
+}
+export default App;
