@@ -1,117 +1,157 @@
-let config = require('../config');
+let config = require("../config");
 
 let getJsonFromUrl = async (url, options) => {
-		const result = await fetch(url, options);
-		if (result.ok === false) {
-			throw result
-		} else {
-			return await result.json();
-		}
-	}
+  const result = await fetch(url, options);
+  if (result.ok === false) {
+    throw result;
+  } else {
+    return await result.json();
+  }
+};
 
 let dadJokeCall = async () => {
   try {
-   const jokeResult = await fetch('https://icanhazdadjoke.com', { headers: { 'Accept': 'application/json' }});
-   const jokeText = await jokeResult.text();
-   const dadJoke = JSON.parse(jokeText);
-   return dadJoke;
+    const jokeResult = await fetch("https://icanhazdadjoke.com", {
+      headers: { Accept: "application/json" },
+    });
+    const jokeText = await jokeResult.text();
+    const dadJoke = JSON.parse(jokeText);
+    return dadJoke;
   } catch (err) {
-    console.error('What do you get when you ask for a dad joke? ', err);
+    console.error("What do you get when you ask for a dad joke? ", err);
   }
-}
+};
 
 let newsCall = async () => {
   try {
-   const newsData = await getJsonFromUrl(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${config.default.NewsAPI}`);
-   return newsData;
+    const newsData = await getJsonFromUrl(
+      `https://newsapi.org/v2/top-headlines?country=us&apiKey=${config.default.NewsAPI}`
+    );
+    return newsData;
   } catch (err) {
-    console.error('Today\'s headline: ', err);
+    console.error("Today's headline: ", err);
   }
-}
+};
 
 let weatherCall = async () => {
   try {
-      const { longitude, latitude, city, region } = await getJsonFromUrl(('https://json.geoiplookup.io/'));
-      const weatherData = await getJsonFromUrl(`https://api.darksky.net/forecast/${config.default.DarkSkyAPI}/${latitude},${longitude}`);
-      return [city, region, weatherData];
+    const { longitude, latitude, city, region } = await getJsonFromUrl(
+      "https://json.geoiplookup.io/"
+    );
+
+    const weatherData = await getJsonFromUrl(
+      `https://api.weatherbit.io/v2.0/forecast/daily?&lat=/${latitude}&lon=${longitude}&key=${config.default.WeatherBitAPI}`
+    );
+    return [city, weatherData];
   } catch (err) {
-    console.error('Hey, how is the weather? ', err);
+    console.error("Hey, how is the weather? ", err);
   }
-}
+};
 
-let weatherTranslator = (text, time) => {
-	let icon;
+let weatherTranslator = (weatherCode) => {
+  let icon;
+  weatherCode = ` ${weatherCode}`;
+  const code = weatherCode.substring(1, 4);
+  const timeOfDay = weatherCode.substring(weatherCode.length - 1);
 
-	text = text.toLowerCase();
-
-  if (text.includes('partly')) {
-		if (time >= 0 && (time <= 5 || time >= 19)) {
-			icon = 'cloudyNight';
-		} else {
-			icon = 'partlyCloudy';	
-		}	
-	} else if (text.includes('cloudy') ) {
-		if (time >= 0 && (time <= 5 || time >= 19)) {
-			icon = 'cloudyNight';
-		} else {
-			icon = 'cloudy';	
-		}
-	} else if (text.includes('clear') || text.includes('sunny') || text.includes('humid') ) {
-		if (time >= 0 && (time <= 5 || time >= 19)) {
-			icon = 'clearNight';
-		} else {
-			icon = 'clear';	
-		}
-  } else if (text.includes('foggy') || text.includes('fog') || text.includes('overcast')) {
-  	icon = 'fog';
-  } else if (text.includes('rain') || text.includes('flurries') || text.includes('drizzle') ) {
-  	icon = 'rain';
-  } else if (text.includes('snow')) {
-  	icon = 'snow';
-  } else if (text.includes('windy')) {
-  	icon = 'wind';
-  } else if (text.includes('thunder') || text.includes('lightning')) {
-  	icon = 'thunderstorms';
+  switch (code) {
+    case "c01":
+      icon = timeOfDay === "d" ? "clear" : "clearNight";
+      break;
+    case "c02":
+    case "c03":
+    case "c04":
+      icon = timeOfDay === "d" ? "partlyCloudy" : "cloudyNight";
+      break;
+    case "d01":
+    case "d02":
+    case "d03":
+    case "r01":
+    case "r02":
+    case "f01":
+    case "r04":
+    case "r05":
+    case "u00":
+    case "s05":
+    case "s06":
+      icon = "rain";
+      break;
+    case "t01":
+    case "t02":
+    case "t03":
+    case "t04":
+    case "t05":
+      icon = "thunderstorms";
+      break;
+    case "s01":
+    case "s02":
+    case "s03":
+    case "s04":
+      icon = "snow";
+      break;
+    default:
+      icon = timeOfDay === "d" ? "clear" : "clearNight";
+      break;
   }
 
   return icon;
-}
-
-let weatherIcons = {
-  clear: 'img/sun.png',
-  partlyCloudy: 'img/partly-cloudy.png',
-  rain: 'img/rain.png',
-  cloudy: 'img/cloudy.png',
-  snow: 'img/snow.png',
-  thunderstorm: 'img/thunderstorms.png',
-  wind: 'img/wind.png',
-  fog: 'img/fog.png',
-  sunrise: '',
-  clearNight: 'img/clear-night.png',
-  cloudyNight: 'img/cloudy-night.png',
-  sleet: '',
-  hail: ''
 };
 
-const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+let weatherIcons = {
+  clear: "img/sun.png",
+  partlyCloudy: "img/partly-cloudy.png",
+  rain: "img/rain.png",
+  cloudy: "img/cloudy.png",
+  snow: "img/snow.png",
+  thunderstorms: "img/thunderstorms.png",
+  wind: "img/wind.png",
+  fog: "img/fog.png",
+  sunrise: "",
+  clearNight: "img/clear-night.png",
+  cloudyNight: "img/cloudy-night.png",
+  sleet: "",
+  hail: "",
+};
+
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+const days = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
 
 const apiCalls = {
   weather: weatherCall,
-  joke: dadJokeCall, 
-  news: newsCall 
-}
+  joke: dadJokeCall,
+  news: newsCall,
+};
 
 const weatherInfo = {
   weatherTranslator: weatherTranslator,
-  weatherIcons: weatherIcons
-}
+  weatherIcons: weatherIcons,
+};
 
 const dateInfo = {
   months: months,
-  days: days
-}
-
+  days: days,
+};
 
 exports.apiCalls = apiCalls;
 exports.weatherInfo = weatherInfo;
