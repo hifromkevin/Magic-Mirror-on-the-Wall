@@ -14,15 +14,6 @@ const App = () => {
     newsBool: false,
   });
 
-  const getJsonFromUrl = async (url, options) => {
-    const result = await fetch(url, options);
-    if (result.ok === false) {
-      throw result;
-    } else {
-      return await result.json();
-    }
-  };
-
   const dadJokeAPI = async () => {
     let jokeData = await apiCalls.joke();
 
@@ -47,6 +38,7 @@ const App = () => {
     let [city, weatherData] = await apiCalls.weather();
 
     const { data } = weatherData;
+    console.log("himom", data);
     const currentWeather = data[0];
 
     setMirrorInfo((state) => ({
