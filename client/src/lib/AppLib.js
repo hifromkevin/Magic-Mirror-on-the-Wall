@@ -35,14 +35,30 @@ let newsCall = async () => {
 
 let weatherCall = async () => {
   try {
-    const { longitude, latitude, city, region } = await getJsonFromUrl(
+    const { city, region, postal_code } = await getJsonFromUrl(
       "https://json.geoiplookup.io/"
     );
 
-    const weatherData = await getJsonFromUrl(
-      `https://api.weatherbit.io/v2.0/forecast/daily?&lat=/${latitude}&lon=${longitude}&key=${config.default.WeatherBitAPI}`
+    const [ getLocationCode ] = await getJsonFromUrl(
+      `http://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=${config.default.accuWeatherAPI}&q=${postal_code}`
     );
-    return [city, weatherData];
+
+    const weatherForecast = await getJsonFromUrl(
+      `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${getLocationCode.Key}?apikey=${config.default.accuWeatherAPI}`
+    );
+
+    const [ currentWeather ] = await getJsonFromUrl(
+      `http://dataservice.accuweather.com/currentconditions/v1/${getLocationCode.Key}?apikey=${config.default.accuWeatherAPI}`
+    );
+
+    /* USE D3 CHARTS TO SHOW WEATHER!!!!! */
+ 
+    return {
+      city,
+      region,
+      weatherForecast,
+      currentWeather
+    }
   } catch (err) {
     console.error("Hey, how is the weather? ", err);
   }
@@ -50,47 +66,72 @@ let weatherCall = async () => {
 
 let weatherTranslator = (weatherCode) => {
   let icon;
-  weatherCode = ` ${weatherCode}`;
-  const code = weatherCode.substring(1, 4);
-  const timeOfDay = weatherCode.substring(weatherCode.length - 1);
 
-  switch (code) {
-    case "c01":
-      icon = timeOfDay === "d" ? "clear" : "clearNight";
+  //reference: https://developer.accuweather.com/weather-icons
+
+  switch (weatherCode) {
+    case 1:
+    case 2:
+    case 30:
+    case 31:
+      icon = "clear";
       break;
-    case "c02":
-    case "c03":
-    case "c04":
-      icon = timeOfDay === "d" ? "partlyCloudy" : "cloudyNight";
+    case 33:
+    case 34:
+      icon = "clearNight";
       break;
-    case "d01":
-    case "d02":
-    case "d03":
-    case "r01":
-    case "r02":
-    case "f01":
-    case "r04":
-    case "r05":
-    case "u00":
-    case "s05":
-    case "s06":
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+      icon = "partlyCloudy";
+      break;
+    case 35:
+    case 36:
+      icon = "cloudyNight";
+      break;
+    case 7:
+    case 8:
+    case 20:
+    case 21:
+    case 38:
+      icon = "cloudy";
+      break;
+    case 11:
+    case 37:
+      icon = "fog";
+      break;
+    case 12:
+    case 13:
+    case 14:
+    case 18:
+    case 19:
+    case 39:
+    case 40:
       icon = "rain";
       break;
-    case "t01":
-    case "t02":
-    case "t03":
-    case "t04":
-    case "t05":
+    case 15:
+    case 16:
+    case 17:
+    case 41:
+    case 42:
       icon = "thunderstorms";
       break;
-    case "s01":
-    case "s02":
-    case "s03":
-    case "s04":
-      icon = "snow";
+    case 22:
+    case 23:
+    case 24:
+    case 25:
+    case 26:
+    case 29:
+    case 43:
+    case 44:
+      icon = "snow";    
       break;
+    case 32:
+      icon = "wind";       
+      break; 
     default:
-      icon = timeOfDay === "d" ? "clear" : "clearNight";
+      icon = "clear";
       break;
   }
 

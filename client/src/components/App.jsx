@@ -1,17 +1,19 @@
 import "babel-polyfill"; // required for `async` keyword
-import React, { Component, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 import DateAndTime from "./DateAndTime.jsx";
 import Headlines from "./Headlines.jsx";
 import Weather from "./Weather.jsx";
 import WelcomeText from "./WelcomeText.jsx";
 
-import { apiCalls, weatherInfo, dateInfo } from "../lib";
+import { 
+  apiCalls, weatherInfo, dateInfo 
+} from "../lib";
 
 const App = () => {
   const [mirrorInfo, setMirrorInfo] = useState({
     weatherBool: false,
-    newsBool: false,
+    newsBool: false
   });
 
   const dadJokeAPI = async () => {
@@ -35,23 +37,35 @@ const App = () => {
   };
 
   const getWeather = async () => {
-    let [city, weatherData] = await apiCalls.weather();
-
-    const { data } = weatherData;
-    console.log("himom", data);
-    const currentWeather = data[0];
+    const {
+    city, 
+    region, 
+    weatherForecast: {
+      DailyForecasts
+    }, 
+    currentWeather: {
+      Temperature: {
+        Imperial: {
+          Value
+        }
+      },
+      WeatherIcon,
+      WeatherText
+    }
+    } = await apiCalls.weather();
 
     setMirrorInfo((state) => ({
-      ...state,
-      currentWeather: {
-        weatherCode: currentWeather.weather.icon,
-        temperature: Math.round(currentWeather.temp * (9 / 5) + 32),
-        description: currentWeather.weather.description,
-      },
-      location: `${city}, ${weatherData.state_code}`,
-      forecasts: data.slice(1, 6),
-      weatherBool: true,
-    }));
+        ...state,
+        currentWeather: {
+          weatherCode: WeatherIcon,
+          temperature: Value,
+          description: WeatherText,
+        },
+        location: `${city}, ${region}`,
+        forecasts: DailyForecasts.slice(1, 5), 
+        weatherBool: true, 
+      })
+    );
   };
 
   useEffect(() => {

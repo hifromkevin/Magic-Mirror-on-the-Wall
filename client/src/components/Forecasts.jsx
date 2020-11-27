@@ -8,7 +8,7 @@ const Forecasts = ({ forecasts, weatherIcons, weatherTranslator, days }) => (
       forecasts.map((forecast, i) => {
         return (
           <SingleForecast
-            date={forecast.valid_date.split("-")}
+            date={`${new Date(forecast.Date)} `}
             forecast={forecast}
             weatherIcons={weatherIcons}
             weatherTranslator={weatherTranslator}
