@@ -27,9 +27,22 @@ let newsCall = async () => {
     const newsData = await getJsonFromUrl(
       `https://newsapi.org/v2/top-headlines?country=us&apiKey=${config.default.NewsAPI}`
     );
+
     return newsData;
   } catch (err) {
     console.error("Today's headline: ", err);
+  }
+};
+
+let surfCall = async () => {
+  try {
+    const surfData = await getJsonFromUrl(
+      `http://magicseaweed.com/api/${config.default.SurfAPI}/forecast/?spot_id=819`
+    ); // this is for Linda Mar, Pacifica, CA
+
+    return surfData;
+  } catch (err) {
+    console.error("WIPEOUT: ", err);
   }
 };
 
@@ -40,15 +53,15 @@ let weatherCall = async () => {
     );
 
     const [ getLocationCode ] = await getJsonFromUrl(
-      `http://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=${config.default.accuWeatherAPI}&q=${postal_code}`
+      `http://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=${config.default.AccuWeatherAPI}&q=${postal_code}`
     );
 
     const weatherForecast = await getJsonFromUrl(
-      `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${getLocationCode.Key}?apikey=${config.default.accuWeatherAPI}`
+      `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${getLocationCode.Key}?apikey=${config.default.AccuWeatherAPI}`
     );
 
     const [ currentWeather ] = await getJsonFromUrl(
-      `http://dataservice.accuweather.com/currentconditions/v1/${getLocationCode.Key}?apikey=${config.default.accuWeatherAPI}`
+      `http://dataservice.accuweather.com/currentconditions/v1/${getLocationCode.Key}?apikey=${config.default.AccuWeatherAPI}`
     );
 
     /* USE D3 CHARTS TO SHOW WEATHER!!!!! */
@@ -182,6 +195,7 @@ const apiCalls = {
   weather: weatherCall,
   joke: dadJokeCall,
   news: newsCall,
+  surf: surfCall,
 };
 
 const weatherInfo = {

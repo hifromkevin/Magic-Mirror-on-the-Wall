@@ -38,20 +38,20 @@ const App = () => {
 
   const getWeather = async () => {
     const {
-    city, 
-    region, 
-    weatherForecast: {
-      DailyForecasts
-    }, 
-    currentWeather: {
-      Temperature: {
-        Imperial: {
-          Value
-        }
-      },
-      WeatherIcon,
-      WeatherText
-    }
+      city, 
+      region, 
+      weatherForecast: {
+        DailyForecasts
+      }, 
+      currentWeather: {
+        Temperature: {
+          Imperial: {
+            Value
+          }
+        },
+        WeatherIcon,
+        WeatherText
+      }
     } = await apiCalls.weather();
 
     setMirrorInfo((state) => ({
@@ -68,6 +68,13 @@ const App = () => {
     );
   };
 
+  const getSurfReport = async () => {
+    let surfData = await apiCalls.surf();
+    console.log('himom!', surfData);
+
+    // setMirrorInfo((state) => ({ ...state, dadJoke: jokeData.joke }));
+  };
+
   useEffect(() => {
     dadJokeAPI();
   }, []);
@@ -76,6 +83,9 @@ const App = () => {
   }, []);
   useEffect(() => {
     getWeather();
+  }, []);
+  useEffect(() => {
+    getSurfReport();
   }, []);
 
   return (

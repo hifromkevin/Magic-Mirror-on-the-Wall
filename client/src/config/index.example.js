@@ -5,6 +5,7 @@ const config = {
   accuWeatherAPI: "ENTER_ACCUWEATHER_API_KEY_HERE", //https://developer.accuweather.com/apis
   WeatherBitAPI: "ENTER_WEATHERBIT_API_KEY_HERE", //https://www.weatherbit.io/
   NewsAPI: "ENTER_NEWS_API_KEY_HERE", // newsapi.org
+  SurfAPI: "ENTER_MAGIC_SEAWEED_API_KEY_HERE" // https://magicseaweed.com/developer/api
 };
 
 module.exports = config;

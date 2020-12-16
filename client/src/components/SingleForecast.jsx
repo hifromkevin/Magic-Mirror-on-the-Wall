@@ -12,7 +12,7 @@ const SingleForecast = ({ date, forecast, weatherIcons, weatherTranslator }) => 
 				className="singleForecast__icon" 
 			/>
 			<p className="singleForecast__temperature">
-				<span className="singleForecast__low">{forecast.Temperature.Minimum.Value}</span> / <span className="singleForecast__high">{forecast.Temperature.Maximum.Value}</span>
+				<span className="singleForecast__high">{forecast.Temperature.Maximum.Value}</span> / <span className="singleForecast__low">{forecast.Temperature.Minimum.Value}</span> 
 			</p>
 		</div>
 	);	
