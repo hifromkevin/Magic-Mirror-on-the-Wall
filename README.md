@@ -4,6 +4,7 @@ _The UI for my Raspberry Pi magic mirror build_
 ![Magic Mirror on the wall](mirror-ui.png?raw=true)
 
 ## Requirements
+
 Node (Suggested v11.13.0)
   - https://nodejs.org/en/download/ 
 
@@ -17,7 +18,15 @@ API Keys:
   - newsapi.org
 2. Go to config/index.example.js and paste in your API key. Then, change the name of the file to index.js. 
 
-## Installing Dependencies
+## Open With a Script
+
+In terminal from the main directory of this software, you may run
+```sh
+bash start-app.sh
+```
+
+## Running Servers
+
 Open three tabs on your terminal. 
 Tab 1: 
 ```sh
