@@ -6,8 +6,8 @@ import Headlines from "./Headlines.jsx";
 import Weather from "./Weather.jsx";
 import WelcomeText from "./WelcomeText.jsx";
 
-import { 
-  apiCalls, weatherInfo, dateInfo 
+import {
+  apiCalls, weatherInfo, dateInfo
 } from "../lib";
 
 const App = () => {
@@ -38,11 +38,11 @@ const App = () => {
 
   const getWeather = async () => {
     const {
-      city, 
-      region, 
+      city,
+      region,
       weatherForecast: {
         DailyForecasts
-      }, 
+      },
       currentWeather: {
         Temperature: {
           Imperial: {
@@ -55,24 +55,23 @@ const App = () => {
     } = await apiCalls.weather();
 
     setMirrorInfo((state) => ({
-        ...state,
-        currentWeather: {
-          weatherCode: WeatherIcon,
-          temperature: Value,
-          description: WeatherText,
-        },
-        location: `${city}, ${region}`,
-        forecasts: DailyForecasts.slice(1, 5), 
-        weatherBool: true, 
-      })
+      ...state,
+      currentWeather: {
+        weatherCode: WeatherIcon,
+        temperature: Value,
+        description: WeatherText,
+      },
+      location: `${city}, ${region}`,
+      forecasts: DailyForecasts.slice(1, 5),
+      weatherBool: true,
+    })
     );
   };
 
   const getSurfReport = async () => {
     let surfData = await apiCalls.surf();
-    console.log('himom!', surfData);
 
-    // setMirrorInfo((state) => ({ ...state, dadJoke: jokeData.joke }));
+    // setMirrorInfo((state) => ({ ...state, surfData }));
   };
 
   useEffect(() => {

@@ -25,7 +25,7 @@ let dadJokeCall = async () => {
 let newsCall = async () => {
   try {
     const newsData = await getJsonFromUrl(
-      `https://newsapi.org/v2/top-headlines?country=us&apiKey=${config.default.NewsAPI}`
+      `https://newsapi.org/v2/top-headlines?country=us&apiKey=${config.NewsAPI}`
     );
 
     return newsData;
@@ -33,11 +33,15 @@ let newsCall = async () => {
     console.error("Today's headline: ", err);
   }
 };
+/* NewsAPI does not seem to work... perhaps try:
+https://developer.dowjones.com/site/docs/newswires_apis/dow_jones_top_stories_api/index.gsp
+https://www.bloomberg.com/professional/support/api-library/
+*/
 
 let surfCall = async () => {
   try {
     const surfData = await getJsonFromUrl(
-      `http://magicseaweed.com/api/${config.default.SurfAPI}/forecast/?spot_id=819`
+      `http://magicseaweed.com/api/${config.SurfAPI}/forecast/?spot_id=819`
     ); // this is for Linda Mar, Pacifica, CA
 
     return surfData;
@@ -52,20 +56,20 @@ let weatherCall = async () => {
       "https://json.geoiplookup.io/"
     );
 
-    const [ getLocationCode ] = await getJsonFromUrl(
-      `http://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=${config.default.AccuWeatherAPI}&q=${postal_code}`
+    const [getLocationCode] = await getJsonFromUrl(
+      `http://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=${config.AccuWeatherAPI}&q=${postal_code}`
     );
 
     const weatherForecast = await getJsonFromUrl(
-      `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${getLocationCode.Key}?apikey=${config.default.AccuWeatherAPI}`
+      `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${getLocationCode.Key}?apikey=${config.AccuWeatherAPI}`
     );
 
-    const [ currentWeather ] = await getJsonFromUrl(
-      `http://dataservice.accuweather.com/currentconditions/v1/${getLocationCode.Key}?apikey=${config.default.AccuWeatherAPI}`
+    const [currentWeather] = await getJsonFromUrl(
+      `http://dataservice.accuweather.com/currentconditions/v1/${getLocationCode.Key}?apikey=${config.AccuWeatherAPI}`
     );
 
     /* USE D3 CHARTS TO SHOW WEATHER!!!!! */
- 
+
     return {
       city,
       region,
@@ -138,11 +142,11 @@ let weatherTranslator = (weatherCode) => {
     case 29:
     case 43:
     case 44:
-      icon = "snow";    
+      icon = "snow";
       break;
     case 32:
-      icon = "wind";       
-      break; 
+      icon = "wind";
+      break;
     default:
       icon = "clear";
       break;
