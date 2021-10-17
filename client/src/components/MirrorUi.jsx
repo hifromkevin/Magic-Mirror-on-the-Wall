@@ -27,13 +27,13 @@ const MirrorUi = () => {
 
     console.log("himom newsData", newsData);
 
-    // setMirrorInfo(state => (
-    // 	{
-    // 		...state,
-    // 		news: newsData.articles.slice(0,6),
-    // 		newsBool: true
-    // 	})
-    // );
+    setMirrorInfo(state => (
+      {
+        ...state,
+        news: newsData.articles.slice(0, 6),
+        newsBool: true
+      })
+    );
   };
 
   const getWeather = async () => {
