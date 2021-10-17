@@ -3,7 +3,7 @@ const getHour = (n) => {
     n = n - 12;
   } else if (n === 0) {
     n = 12;
-  } 
+  }
 
   return n;
 };

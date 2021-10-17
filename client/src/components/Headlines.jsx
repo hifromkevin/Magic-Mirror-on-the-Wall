@@ -10,7 +10,7 @@ const Headlines = ({ news, newsBool }) => {
 			</div>
 		)
 	}
-  return (<div className="headlines">WAITING FOR HEADLINES</div>)
+	return (<div className="headlines">WAITING FOR HEADLINES</div>)
 }
 
 export default Headlines;
