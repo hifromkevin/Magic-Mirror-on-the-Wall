@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import DateAndTime from "./DateAndTime.jsx";
 import Headlines from "./Headlines.jsx";
 import Weather from "./Weather.jsx";
-import WelcomeText from "./WelcomeText.jsx";
+import WelcomeText from "./DadJoke.jsx";
 
 import {
   apiCalls, weatherInfo, dateInfo
@@ -79,18 +79,10 @@ const MirrorUi = () => {
     // setMirrorInfo((state) => ({ ...state, surfData }));
   };
 
-  useEffect(() => {
-    dadJokeAPI();
-  }, []);
-  useEffect(() => {
-    newsAPI();
-  }, []);
-  useEffect(() => {
-    getWeather();
-  }, []);
-  useEffect(() => {
-    getSurfReport();
-  }, []);
+  useEffect(() => dadJokeAPI(), []);
+  useEffect(() => newsAPI(), []);
+  useEffect(() => getWeather(), []);
+  useEffect(() => getSurfReport(), []);
 
   const { days, months } = dateInfo;
 
