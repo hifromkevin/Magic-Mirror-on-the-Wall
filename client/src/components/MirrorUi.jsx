@@ -79,10 +79,10 @@ const MirrorUi = () => {
     // setMirrorInfo((state) => ({ ...state, surfData }));
   };
 
-  useEffect(() => dadJokeAPI(), []);
-  useEffect(() => newsAPI(), []);
-  useEffect(() => getWeather(), []);
-  useEffect(() => getSurfReport(), []);
+  useEffect(() => { dadJokeAPI() }, []);
+  useEffect(() => { newsAPI() }, []);
+  useEffect(() => { getWeather() }, []);
+  useEffect(() => { getSurfReport() }, []);
 
   const { days, months } = dateInfo;
 
