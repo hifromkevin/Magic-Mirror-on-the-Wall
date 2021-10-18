@@ -7,22 +7,28 @@ const Weather = ({
   location,
   forecasts,
   weatherIcons,
-  days,
   weatherTranslator,
   weatherBool,
 }) => {
   if (weatherBool) {
     return (
       <div className='weather'>
-        <p className='weather__temperature'>{currentWeather.temperature}</p>
-        <img
-          src={weatherIcons[weatherTranslator(currentWeather.weatherCode)]}
-          alt={currentWeather.description}
-          className='weather__icon'
-        />
-        <p className='weather__location'>in {location}</p>
-        <p className='weather__type'>{currentWeather.description}</p>
-        {/* <p className="weather__description">{currentWeather.description}</p> */}
+        <div className='weather__today'>
+
+          <div className='weather__today__main'>
+            <img
+              src={weatherIcons[weatherTranslator(currentWeather.weatherCode)]}
+              alt={currentWeather.description}
+              className='weather__today__icon'
+            />
+            <div className='weather__today__sub'>
+              <p className='weather__today__temperature'>{currentWeather.temperature}</p>
+              <p className='weather__today__location'>in {location}</p>
+            </div>
+          </div>
+          <p className='weather__today__type'>{currentWeather.description}</p>
+          {/* <p className="weather__description">{currentWeather.description}</p> */}
+        </div>
         <Forecasts
           forecasts={forecasts}
           weatherIcons={weatherIcons}

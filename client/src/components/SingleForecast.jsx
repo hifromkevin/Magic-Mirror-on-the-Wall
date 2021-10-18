@@ -5,7 +5,7 @@ const SingleForecast = ({ date, forecast, weatherIcons, weatherTranslator }) => 
 
 	return (
 		<div className="singleForecast">
-			<p className="singleForecast__date">{`${date[1]}/${date[2]}`}</p>
+			<p className="singleForecast__date">{`${date[1]} ${date[2]}`}</p>
 			<img
 				src={weatherIcons[weatherTranslator(forecast.Day.Icon)]}
 				alt={forecast.Day.IconPhrase}

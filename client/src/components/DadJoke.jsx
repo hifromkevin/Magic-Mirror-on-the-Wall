@@ -1,9 +1,5 @@
 import React from 'react';
 
-const DadJoke = ({ dadJoke }) => (
-	<div className="dadJoke">
-		<p className="dadJoke__text">{dadJoke}</p>
-	</div>
-)
+const DadJoke = ({ dadJoke }) => <p className="dadJoke">{dadJoke}</p>
 
 export default DadJoke;

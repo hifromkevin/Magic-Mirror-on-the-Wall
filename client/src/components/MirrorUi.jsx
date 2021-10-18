@@ -100,7 +100,7 @@ const MirrorUi = () => {
 
   return (
     <div className='main'>
-      <div className='top'>
+      <div className='section'>
         <Weather
           currentWeather={currentWeather}
           location={location}
@@ -111,10 +111,10 @@ const MirrorUi = () => {
         />
         <DateAndTime months={months} days={days} />
       </div>
-      <div className='middle'>
+      <div className='section'>
         <WelcomeText dadJoke={dadJoke} />
       </div>
-      <div className='bottom'>
+      <div className='section'>
         <Headlines news={news} newsBool={newsBool} />
       </div>
     </div>

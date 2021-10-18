@@ -6,19 +6,28 @@
 	&__loading
 		width: 50%
 		margin: 0 auto
-	&__temperature
-		font-size: $xl
-		display: inline
-		&:after 
-			content: '°'
-	&__icon
-		width: 60px
-		vertical-align: top
-		margin-left: 90px
-	&__location
-		font-size: $small
-		margin-bottom: 5%
-	&__type
-		font-size: $large
-	&__description
-		font-weight: $regular
+	&__today
+		align-items: center
+		display: flex
+		margin-bottom: 24px
+		width: 100%
+		&__description
+			font-weight: $regular
+		&__icon
+			width: 84px
+			vertical-align: top
+			margin-right: 12px
+		&__location
+			font-size: $small
+		&__main
+			display: flex
+		&__temperature
+			font-size: $xl
+			display: inline
+			&:after
+				content: '°'
+		&__type
+			font-size: $large
+			font-weight: $ultralight
+			letter-spacing: 5px
+			margin-left: 50px
