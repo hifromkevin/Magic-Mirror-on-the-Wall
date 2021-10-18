@@ -25,8 +25,6 @@ const MirrorUi = () => {
   const newsAPI = async () => {
     let newsData = await apiCalls.news();
 
-    console.log("himom newsData", newsData);
-
     setMirrorInfo(state => (
       {
         ...state,
