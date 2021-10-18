@@ -9,7 +9,7 @@ let getJsonFromUrl = async (url, options) => {
   }
 };
 
-let dadJokeCall = async () => {
+let dadJokeApi = async () => {
   try {
     const jokeResult = await fetch("https://icanhazdadjoke.com", {
       headers: { Accept: "application/json" },
@@ -22,7 +22,7 @@ let dadJokeCall = async () => {
   }
 };
 
-let newsCall = async () => {
+let newsApi = async () => {
   try {
     const newsData = await getJsonFromUrl(
       `https://newsapi.org/v2/top-headlines?country=us&apiKey=${config.NewsAPI}`
@@ -38,7 +38,7 @@ https://developer.dowjones.com/site/docs/newswires_apis/dow_jones_top_stories_ap
 https://www.bloomberg.com/professional/support/api-library/
 */
 
-let surfCall = async () => {
+let surfApi = async () => {
   try {
     const surfData = await getJsonFromUrl(
       `http://magicseaweed.com/api/${config.SurfAPI}/forecast/?spot_id=819`
@@ -50,7 +50,7 @@ let surfCall = async () => {
   }
 };
 
-let weatherCall = async () => {
+let weatherApi = async () => {
   try {
     const { city, region, postal_code } = await getJsonFromUrl(
       "https://json.geoiplookup.io/"
@@ -196,10 +196,10 @@ const days = [
 ];
 
 const apiCalls = {
-  weather: weatherCall,
-  joke: dadJokeCall,
-  news: newsCall,
-  surf: surfCall,
+  dadJokeApi,
+  newsApi,
+  surfApi,
+  weatherApi
 };
 
 const weatherInfo = {

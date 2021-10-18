@@ -10,6 +10,13 @@ import {
   apiCalls, weatherInfo, dateInfo
 } from "../lib";
 
+const {
+  dadJokeApi,
+  newsApi,
+  surfApi,
+  weatherApi
+} = apiCalls;
+
 const MirrorUi = () => {
   const [mirrorInfo, setMirrorInfo] = useState({
     weatherBool: false,
@@ -17,13 +24,13 @@ const MirrorUi = () => {
   });
 
   const dadJokeAPI = async () => {
-    let jokeData = await apiCalls.joke();
+    let jokeData = await dadJokeApi();
 
     setMirrorInfo((state) => ({ ...state, dadJoke: jokeData.joke }));
   };
 
   const newsAPI = async () => {
-    let newsData = await apiCalls.news();
+    let newsData = await newsApi();
 
     setMirrorInfo(state => (
       {
@@ -50,7 +57,7 @@ const MirrorUi = () => {
         WeatherIcon,
         WeatherText
       }
-    } = await apiCalls.weather();
+    } = await weatherApi();
 
     setMirrorInfo((state) => ({
       ...state,
@@ -67,7 +74,7 @@ const MirrorUi = () => {
   };
 
   const getSurfReport = async () => {
-    let surfData = await apiCalls.surf();
+    let surfData = await surfApi();
 
     // setMirrorInfo((state) => ({ ...state, surfData }));
   };
@@ -85,25 +92,38 @@ const MirrorUi = () => {
     getSurfReport();
   }, []);
 
+  const { days, months } = dateInfo;
+
+  const {
+    currentWeather,
+    dadJoke,
+    forecasts,
+    location,
+    news,
+    newsBool,
+    weatherBool
+  } = mirrorInfo;
+
+  const { weatherIcons, weatherTranslator } = weatherInfo;
+
   return (
     <div className='main'>
       <div className='top'>
         <Weather
-          currentWeather={mirrorInfo.currentWeather}
-          location={mirrorInfo.location}
-          forecasts={mirrorInfo.forecasts}
-          weatherTranslator={weatherInfo.weatherTranslator}
-          weatherIcons={weatherInfo.weatherIcons}
-          forecasts={mirrorInfo.forecasts}
-          weatherBool={mirrorInfo.weatherBool}
+          currentWeather={currentWeather}
+          location={location}
+          forecasts={forecasts}
+          weatherTranslator={weatherTranslator}
+          weatherIcons={weatherIcons}
+          weatherBool={weatherBool}
         />
-        <DateAndTime months={dateInfo.months} days={dateInfo.days} />
+        <DateAndTime months={months} days={days} />
       </div>
       <div className='middle'>
-        <WelcomeText dadJoke={mirrorInfo.dadJoke} />
+        <WelcomeText dadJoke={dadJoke} />
       </div>
       <div className='bottom'>
-        <Headlines news={mirrorInfo.news} newsBool={mirrorInfo.newsBool} />
+        <Headlines news={news} newsBool={newsBool} />
       </div>
     </div>
   );
