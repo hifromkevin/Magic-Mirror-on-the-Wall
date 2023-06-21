@@ -12,7 +12,6 @@ import {
 
 const {
   dadJokeApi,
-  newsApi,
   surfApi,
   weatherApi
 } = apiCalls;
@@ -30,15 +29,20 @@ const MirrorUi = () => {
   };
 
   const newsAPI = async () => {
-    let newsData = await newsApi();
-
-    setMirrorInfo(state => (
-      {
-        ...state,
-        news: newsData.articles.slice(0, 6),
-        newsBool: true
-      })
-    );
+    try {
+      await fetch('/news')
+        .then(response => response.json())
+        .then(res => setMirrorInfo(state => (
+          {
+            ...state,
+            news: res.data.slice(0, 6),
+            newsBool: true
+          })
+        ))
+        .catch(error => console.error('No news is bad news :(', error))
+    } catch (err) {
+      console.error('No news is bad news2 :(', error);
+    }
   };
 
   const getWeather = async () => {
@@ -76,6 +80,8 @@ const MirrorUi = () => {
   const getSurfReport = async () => {
     let surfData = await surfApi();
 
+    console.log('Surf Data', surfData)
+
     // setMirrorInfo((state) => ({ ...state, surfData }));
   };
 
@@ -83,6 +89,7 @@ const MirrorUi = () => {
   useEffect(() => { newsAPI() }, []);
   useEffect(() => { getWeather() }, []);
   useEffect(() => { getSurfReport() }, []);
+
 
   const { days, months } = dateInfo;
 
