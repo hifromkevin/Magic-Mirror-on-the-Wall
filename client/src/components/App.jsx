@@ -16,7 +16,7 @@ const App = () => {
     setUi,
     setUiInfo
   ] = useState({
-    selectedPage: null
+    selectedPage: 'mirror'
   });
 
   const voiceControl = () => {
