@@ -22,22 +22,6 @@ let dadJokeApi = async () => {
   }
 };
 
-let newsApi = async () => {
-  try {
-    const newsData = await getJsonFromUrl(
-      `https://newsapi.org/v2/top-headlines?country=us&apiKey=${config.NewsAPI}`
-    );
-
-    return newsData;
-  } catch (err) {
-    console.error("Today's headline: ", err);
-  }
-};
-/* NewsAPI does not seem to work... perhaps try:
-https://developer.dowjones.com/site/docs/newswires_apis/dow_jones_top_stories_api/index.gsp
-https://www.bloomberg.com/professional/support/api-library/
-*/
-
 let surfApi = async () => {
   try {
     const surfData = await getJsonFromUrl(
@@ -52,12 +36,10 @@ let surfApi = async () => {
 
 let weatherApi = async () => {
   try {
-    const { city, region, postal_code } = await getJsonFromUrl(
-      "https://json.geoiplookup.io/"
-    );
+    const { city, region, postal } = await getJsonFromUrl(`https://ipinfo.io/json?token=${config.ipInfoAPI}`);
 
     const [getLocationCode] = await getJsonFromUrl(
-      `http://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=${config.AccuWeatherAPI}&q=${postal_code}`
+      `http://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=${config.AccuWeatherAPI}&q=${postal}`
     );
 
     const weatherForecast = await getJsonFromUrl(
@@ -197,7 +179,6 @@ const days = [
 
 const apiCalls = {
   dadJokeApi,
-  newsApi,
   surfApi,
   weatherApi
 };
