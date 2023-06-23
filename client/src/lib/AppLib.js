@@ -180,7 +180,7 @@ const days = [
 const apiCalls = {
   dadJokeApi,
   surfApi,
-  weatherApi
+  // weatherApi
 };
 
 const weatherInfo = {

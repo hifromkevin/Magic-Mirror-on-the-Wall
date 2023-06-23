@@ -13,7 +13,6 @@ import {
 const {
   dadJokeApi,
   surfApi,
-  weatherApi
 } = apiCalls;
 
 const MirrorUi = () => {
@@ -29,67 +28,68 @@ const MirrorUi = () => {
   };
 
   const newsAPI = async () => {
-    try {
-      await fetch('/news')
-        .then(response => response.json())
-        .then(res => setMirrorInfo(state => (
-          {
-            ...state,
-            news: res.data.slice(0, 6),
-            newsBool: true
-          })
-        ))
-        .catch(error => console.error('No news is bad news :(', error))
-    } catch (err) {
-      console.error('No news is bad news2 :(', error);
-    }
+    await fetch('/news')
+      .then(response => response.json())
+      .then(res => setMirrorInfo(state => (
+        {
+          ...state,
+          news: res.data.slice(0, 6),
+          newsBool: true
+        })
+      ))
+      .catch(error => console.error('No news is bad news :(', error));
   };
 
-  const getWeather = async () => {
-    const {
-      city,
-      region,
-      weatherForecast: {
-        DailyForecasts
-      },
-      currentWeather: {
-        Temperature: {
-          Imperial: {
-            Value
-          }
-        },
-        WeatherIcon,
-        WeatherText
-      }
-    } = await weatherApi();
+  const getLocationAndWeatherAPI = async () => {
+    await fetch('/location')
+      .then(response => response.json())
+      .then(res => {
+        const {
+          city,
+          region,
+          currentWeather,
+          weatherForecast: {
+            DailyForecasts
+          },
+        } = res;
 
-    setMirrorInfo((state) => ({
-      ...state,
-      currentWeather: {
-        weatherCode: WeatherIcon,
-        temperature: Value,
-        description: WeatherText,
-      },
-      location: `${city}, ${region}`,
-      forecasts: DailyForecasts.slice(1, 5),
-      weatherBool: true,
-    })
-    );
+        const [{
+          Temperature: {
+            Imperial: {
+              Value
+            }
+          },
+          WeatherIcon,
+          WeatherText
+        }] = currentWeather;
+
+        setMirrorInfo((state) => ({
+          ...state,
+          currentWeather: {
+            weatherCode: WeatherIcon,
+            temperature: Value,
+            description: WeatherText,
+          },
+          location: `${city}, ${region}`,
+          forecasts: DailyForecasts.slice(1, 5),
+          weatherBool: true,
+        }));
+      })
+      .catch(error => console.error('Off the grid :(', error))
   };
 
   const getSurfReport = async () => {
     let surfData = await surfApi();
 
     console.log('Surf Data', surfData)
-
-    // setMirrorInfo((state) => ({ ...state, surfData }));
   };
 
-  useEffect(() => { dadJokeAPI() }, []);
-  useEffect(() => { newsAPI() }, []);
-  useEffect(() => { getWeather() }, []);
-  useEffect(() => { getSurfReport() }, []);
-
+  useEffect(() => {
+    dadJokeAPI();
+    newsAPI();
+    getSurfReport();
+    getLocationAndWeatherAPI();
+  }, []);
 
   const { days, months } = dateInfo;
 
