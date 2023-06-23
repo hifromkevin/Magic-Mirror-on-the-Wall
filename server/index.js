@@ -7,11 +7,40 @@ const config = require('../client/src/config/index');
 
 app.use(express.static(__dirname + '/../client/dist'));
 
+app.get('/location', (req, res) => {
+  axios.get(`https://ipinfo.io/json?token=${config.ipInfoAPI}`)
+    .then(async (data) => {
+      const {
+        data: { city, region, postal }
+      } = data;
+
+      const getLocationCode = await axios.get(
+        `http://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=${config.AccuWeatherAPI}&q=${postal}`
+      );
+
+      const [locationData] = getLocationCode.data;
+
+      const weatherForecast = await axios.get(
+        `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${locationData.Key}?apikey=${config.AccuWeatherAPI}`
+      );
+
+      const currentWeather = await axios.get(
+        `http://dataservice.accuweather.com/currentconditions/v1/${locationData.Key}?apikey=${config.AccuWeatherAPI}`
+      );
+
+      res.status(200).send({
+        city,
+        region,
+        weatherForecast: weatherForecast.data,
+        currentWeather: currentWeather.data
+      });
+    })
+    .catch(err => console.log('Off the grid :(', err));
+});
+
 app.get('/news', (req, res) => {
   axios.get(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${config.NewsAPI}`)
-    .then(data => {
-      res.status(200).send({ data: data.data.articles })
-    })
+    .then(data => res.status(200).send({ data: data.data.articles }))
     .catch(err => console.log('No news is bad news :(', err));
 });
 
