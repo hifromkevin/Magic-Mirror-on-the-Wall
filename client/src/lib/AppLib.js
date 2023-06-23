@@ -33,36 +33,6 @@ let surfApi = async () => {
     console.error("WIPEOUT: ", err);
   }
 };
-
-let weatherApi = async () => {
-  try {
-    const { city, region, postal } = await getJsonFromUrl(`https://ipinfo.io/json?token=${config.ipInfoAPI}`);
-
-    const [getLocationCode] = await getJsonFromUrl(
-      `http://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=${config.AccuWeatherAPI}&q=${postal}`
-    );
-
-    const weatherForecast = await getJsonFromUrl(
-      `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${getLocationCode.Key}?apikey=${config.AccuWeatherAPI}`
-    );
-
-    const [currentWeather] = await getJsonFromUrl(
-      `http://dataservice.accuweather.com/currentconditions/v1/${getLocationCode.Key}?apikey=${config.AccuWeatherAPI}`
-    );
-
-    /* USE D3 CHARTS TO SHOW WEATHER!!!!! */
-
-    return {
-      city,
-      region,
-      weatherForecast,
-      currentWeather
-    }
-  } catch (err) {
-    console.error("Hey, how is the weather? ", err);
-  }
-};
-
 let weatherTranslator = (weatherCode) => {
   let icon;
 
@@ -180,17 +150,16 @@ const days = [
 const apiCalls = {
   dadJokeApi,
   surfApi,
-  // weatherApi
 };
 
 const weatherInfo = {
-  weatherTranslator: weatherTranslator,
-  weatherIcons: weatherIcons,
+  weatherTranslator,
+  weatherIcons,
 };
 
 const dateInfo = {
-  months: months,
-  days: days,
+  months,
+  days,
 };
 
 exports.apiCalls = apiCalls;
