@@ -123,30 +123,6 @@ let weatherIcons = {
   hail: "",
 };
 
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-const days = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
-
 const apiCalls = {
   dadJokeApi,
   surfApi,
@@ -157,11 +133,5 @@ const weatherInfo = {
   weatherIcons,
 };
 
-const dateInfo = {
-  months,
-  days,
-};
-
 exports.apiCalls = apiCalls;
 exports.weatherInfo = weatherInfo;
-exports.dateInfo = dateInfo;
