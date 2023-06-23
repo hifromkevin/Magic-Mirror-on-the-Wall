@@ -1,7 +1,7 @@
 import React from "react";
 import SingleForecast from "./SingleForecast.jsx";
 
-const Forecasts = ({ forecasts, weatherIcons, weatherTranslator, days }) => (
+const Forecasts = ({ forecasts, weatherIcons, weatherTranslator }) => (
   <div className='forecasts'>
     <h1 className='forecasts__title'>Forecast</h1>
     <div className='forecasts__list'>

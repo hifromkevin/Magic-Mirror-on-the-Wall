@@ -6,9 +6,7 @@ import Headlines from "./Headlines.jsx";
 import Weather from "./Weather.jsx";
 import WelcomeText from "./DadJoke.jsx";
 
-import {
-  apiCalls, weatherInfo, dateInfo
-} from "../lib";
+import { apiCalls, weatherInfo } from "../lib";
 
 const {
   dadJokeApi,
@@ -91,8 +89,6 @@ const MirrorUi = () => {
     getLocationAndWeatherAPI();
   }, []);
 
-  const { days, months } = dateInfo;
-
   const {
     currentWeather,
     dadJoke,
@@ -116,7 +112,7 @@ const MirrorUi = () => {
           weatherIcons={weatherIcons}
           weatherBool={weatherBool}
         />
-        <DateAndTime months={months} days={days} />
+        <DateAndTime />
       </div>
       <div className='section'>
         <WelcomeText dadJoke={dadJoke} />
