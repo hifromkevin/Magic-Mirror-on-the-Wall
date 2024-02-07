@@ -73,13 +73,13 @@ const MirrorUi = () => {
           weatherBool: true,
         }));
       })
-      .catch(error => console.error('Off the grid :(', error))
+      .catch(error => console.error('Off the grid :(', error));
   };
 
   const getSurfReport = async () => {
     let surfData = await surfApi();
 
-    console.log('Surf Data', surfData)
+    console.log('Surf Data', surfData);
   };
 
   useEffect(() => {

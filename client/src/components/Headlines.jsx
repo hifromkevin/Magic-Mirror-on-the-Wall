@@ -2,7 +2,7 @@ import React from 'react';
 import SingleHeadline from './SingleHeadline.jsx';
 
 const Headlines = ({ news, newsBool }) => {
-	if (!newsBool) return (<div className="headlines">WAITING FOR HEADLINES</div>)
+	if (!newsBool) return (<div className="headlines">WAITING FOR HEADLINES</div>);
 
 	return (
 		<div className="headlines">
@@ -11,7 +11,7 @@ const Headlines = ({ news, newsBool }) => {
 				{news.map((headline, i) => <SingleHeadline headline={headline} key={i} />)}
 			</div>
 		</div>
-	)
-}
+	);
+};
 
 export default Headlines;

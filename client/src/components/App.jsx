@@ -50,7 +50,7 @@ const App = () => {
 
   if (setUi.selectedPage === 'mirror') return <MirrorUi />;
 
-  return <div className='main'>&nbsp;</div>
+  return <div className='main'>&nbsp;</div>;
 };
 
 export default App;
