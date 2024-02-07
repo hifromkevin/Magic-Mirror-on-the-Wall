@@ -1,6 +1,6 @@
-let config = require("../config");
+const config = require("../config");
 
-let getJsonFromUrl = async (url, options) => {
+const getJsonFromUrl = async (url, options) => {
   const result = await fetch(url, options);
   if (result.ok === false) {
     throw result;
@@ -9,7 +9,7 @@ let getJsonFromUrl = async (url, options) => {
   }
 };
 
-let dadJokeApi = async () => {
+const dadJokeApi = async () => {
   try {
     const jokeResult = await fetch("https://icanhazdadjoke.com", {
       headers: { Accept: "application/json" },
@@ -22,7 +22,7 @@ let dadJokeApi = async () => {
   }
 };
 
-let surfApi = async () => {
+const surfApi = async () => {
   try {
     const surfData = await getJsonFromUrl(
       `http://magicseaweed.com/api/${config.SurfAPI}/forecast/?spot_id=819`
@@ -33,7 +33,8 @@ let surfApi = async () => {
     console.error("WIPEOUT: ", err);
   }
 };
-let weatherTranslator = (weatherCode) => {
+
+const weatherTranslator = (weatherCode) => {
   let icon;
 
   //reference: https://developer.accuweather.com/weather-icons
@@ -107,7 +108,7 @@ let weatherTranslator = (weatherCode) => {
   return icon;
 };
 
-let weatherIcons = {
+const weatherIcons = {
   clear: "img/sun.png",
   partlyCloudy: "img/partly-cloudy.png",
   rain: "img/rain.png",
