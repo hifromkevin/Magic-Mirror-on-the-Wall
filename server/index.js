@@ -9,30 +9,31 @@ app.use(express.static(__dirname + '/../client/dist'));
 
 app.get('/location', (req, res) => {
   axios.get(`https://ipinfo.io/json?token=${ipInfoAPI}`)
-    .then(async (data) => {
+    .then(async (localeData) => {
       const {
         data: { city, region, postal }
-      } = data;
+      } = localeData;
 
       const getLocationCode = await axios.get(
         `http://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=${AccuWeatherAPI}&q=${postal}`
       );
 
       const [locationData] = getLocationCode.data;
+      const { Key } = locationData;
 
-      const weatherForecast = await axios.get(
-        `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${locationData.Key}?apikey=${AccuWeatherAPI}`
+      const { data: weatherForecast } = await axios.get(
+        `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${Key}?apikey=${AccuWeatherAPI}`
       );
 
-      const currentWeather = await axios.get(
-        `http://dataservice.accuweather.com/currentconditions/v1/${locationData.Key}?apikey=${AccuWeatherAPI}`
+      const { data: currentWeather } = await axios.get(
+        `http://dataservice.accuweather.com/currentconditions/v1/${Key}?apikey=${AccuWeatherAPI}`
       );
 
       res.status(200).send({
         city,
         region,
-        weatherForecast: weatherForecast.data,
-        currentWeather: currentWeather.data
+        weatherForecast,
+        currentWeather
       });
     })
     .catch(err => console.log('Off the grid :(', err));
