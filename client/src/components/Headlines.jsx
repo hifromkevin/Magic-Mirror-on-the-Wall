@@ -6,7 +6,7 @@ const Headlines = ({ news, newsBool }) => {
 
 	return (
 		<div className="headlines">
-			<h1 className="headlines__title">Headlines</h1>
+			<h1 className="headlines__title">News Headlines</h1>
 			<div className="headlines__list">
 				{news.map((headline, i) => <SingleHeadline headline={headline} key={i} />)}
 			</div>
