@@ -6,6 +6,8 @@ import '../dist/styles/style.sass';
 
 const root = createRoot(document.getElementById('app'));
 
-root.render(<React.StrictMode>
-  <App />
-</React.StrictMode>);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
