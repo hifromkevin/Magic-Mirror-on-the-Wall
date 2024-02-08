@@ -12,7 +12,8 @@ const DateAndTime = (props) => {
 	return (
 		<div className="dateAndTime">
 			<p className="dateAndTime__time">{getTime(currentDate)}</p>
-			<p className="dateAndTime__date">{currentDate.toLocaleString("en-US", { weekday: 'long' })}<br /> {currentDate.toLocaleString('default', { month: 'long' })} {currentDate.getDate()}, {currentDate.getFullYear()}</p>
+			<p className="dateAndTime__date">{currentDate.toLocaleString('default', { month: 'long' })} {currentDate.getDate()}, {currentDate.getFullYear()}</p>
+			<p className="dateAndTime__date">{currentDate.toLocaleString("en-US", { weekday: 'long' })}</p>
 		</div>
 	);
 };
