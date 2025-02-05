@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-import Forecasts from "./Forecasts.jsx";
+import Forecasts from './Forecasts.jsx';
 
 const Weather = ({
   currentWeather,
@@ -12,21 +12,22 @@ const Weather = ({
 }) => {
   if (weatherBool) {
     return (
-      <div className='weather'>
-        <div className='weather__today'>
-
-          <div className='weather__today__main'>
+      <div className="weather">
+        <div className="weather__today">
+          <div className="weather__today__main">
             <img
               src={weatherIcons[weatherTranslator(currentWeather.weatherCode)]}
               alt={currentWeather.description}
-              className='weather__today__icon'
+              className="weather__today__icon"
             />
-            <div className='weather__today__sub'>
-              <p className='weather__today__temperature'>{currentWeather.temperature}</p>
-              <p className='weather__today__location'>in {location}</p>
+            <div className="weather__today__sub">
+              <p className="weather__today__temperature">
+                {currentWeather.temperature}
+              </p>
+              <p className="weather__today__location">in {location}</p>
             </div>
           </div>
-          <p className='weather__today__type'>{currentWeather.description}</p>
+          <p className="weather__today__type">{currentWeather.description}</p>
           {/* <p className="weather__description">{currentWeather.description}</p> */}
         </div>
         <Forecasts
@@ -38,11 +39,11 @@ const Weather = ({
     );
   }
   return (
-    <div className='weather'>
+    <div className="weather">
       <img
-        className='weather__loading'
-        src='img/weather-loading.gif'
-        alt='loading weather'
+        className="weather__loading"
+        src="img/weather-loading.gif"
+        alt="loading weather"
       />
     </div>
   );
