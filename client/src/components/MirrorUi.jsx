@@ -186,7 +186,7 @@ const MirrorUi = () => {
     dadJokeAPI();
     newsAPI();
     // getSurfReport();
-    // getLocationAndWeatherAPI();
+    getLocationAndWeatherAPI();
   }, []);
 
   const {
@@ -202,22 +202,22 @@ const MirrorUi = () => {
   return (
     <div className="main">
       <div className="section">
-        {/* <Weather
+        <Weather
           currentWeather={currentWeather}
           location={location}
           forecasts={forecasts}
           weatherTranslator={weatherTranslator}
           weatherIcons={weatherIcons}
           weatherBool={weatherBool}
-        /> */}
+        />
         <div>
-          Ask me anything! (About the weather):
+          {/* Ask me anything! (About the weather):
           <textarea
             onChange={(e) => getApiText(e.target.value)}
             value={apiText}
           ></textarea>
           <button onClick={getAI}>Show me the answer</button>
-          <p>Response: {apiResponse}</p>
+          <p>Response: {apiResponse}</p> */}
         </div>
         <DateAndTime />
       </div>

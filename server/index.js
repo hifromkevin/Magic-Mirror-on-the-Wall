@@ -1,7 +1,10 @@
 const express = require('express');
-const app = express();
 const axios = require('axios');
 const { OpenAI } = require('openai');
+const Redis = require('ioredis');
+
+const app = express();
+const redis = new Redis();
 
 const port = 3005;
 
@@ -25,27 +28,43 @@ app.get('/location', (req, res) => {
         data: { city, region, postal },
       } = localeData;
 
-      const getLocationCode = await axios.get(
-        `http://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=${AccuWeatherAPI}&q=${postal}`
-      );
+      const cachedData = await redis.get(`city:${city}`);
+      if (cachedData) {
+        console.log('✅ Serving from Redis cache');
+        return res.json(JSON.parse(cachedData));
+      }
 
-      const [locationData] = getLocationCode.data;
-      const { Key } = locationData;
+      try {
+        const getLocationCode = await axios.get(
+          `http://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=${AccuWeatherAPI}&q=${postal}`
+        );
 
-      const { data: weatherForecast } = await axios.get(
-        `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${Key}?apikey=${AccuWeatherAPI}`
-      );
+        const [locationData] = getLocationCode.data;
+        const { Key } = locationData;
 
-      const { data: currentWeather } = await axios.get(
-        `http://dataservice.accuweather.com/currentconditions/v1/${Key}?apikey=${AccuWeatherAPI}`
-      );
+        const [{ data: weatherForecast }, { data: currentWeather }] =
+          await Promise.all([
+            axios.get(
+              `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${Key}?apikey=${AccuWeatherAPI}`
+            ),
+            axios.get(
+              `http://dataservice.accuweather.com/currentconditions/v1/${Key}?apikey=${AccuWeatherAPI}`
+            ),
+          ]);
 
-      res.status(200).send({
-        city,
-        region,
-        weatherForecast,
-        currentWeather,
-      });
+        const responseData = {
+          city,
+          region,
+          weatherForecast,
+          currentWeather,
+        };
+
+        await redis.setex(`city:${city}`, 600, JSON.stringify(responseData));
+
+        res.status(200).send(responseData);
+      } catch (error) {
+        console.log('Raindrops keep falling on my head: ', err);
+      }
     })
     .catch((err) => console.log('Off the grid :(', err));
 });
