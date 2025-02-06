@@ -1,10 +1,12 @@
 import 'babel-polyfill'; // required for `async` keyword
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import DateAndTime from './DateAndTime.jsx';
 import Headlines from './Headlines.jsx';
 import Weather from './Weather.jsx';
 import WelcomeText from './DadJoke.jsx';
+
+import audioFile from '../assets/speech.mp3';
 
 import { apiCalls, weatherInfo } from '../lib';
 
@@ -17,8 +19,17 @@ const MirrorUi = () => {
   });
   const [apiText, getApiText] = useState('');
   const [apiResponse, setApiResponse] = useState('');
+  const audioRef = useRef(new Audio(audioFile));
 
   const { weatherIcons, weatherTranslator } = weatherInfo;
+
+  const clearAudioFile = async () => {
+    try {
+      await fetch('/clear-audio', { method: 'POST' });
+    } catch (error) {
+      console.error('Failed to clear audio file:', error);
+    }
+  };
 
   const dadJokeAPI = async () => {
     let jokeData = await dadJokeApi();
@@ -81,78 +92,29 @@ const MirrorUi = () => {
     console.log('Surf Data', surfData);
   };
 
-  const fakeWeather = {
-    currentWeather: {
-      weatherCode: weatherTranslator(1),
-      temperature: 70,
-      description: 'Sunny',
-    },
-    location: 'San Francisco, CA',
-    forecasts: [
-      {
-        Date: '2021-10-01T07:00:00-07:00',
-        Day: {
-          Icon: 1,
-          IconPhrase: 'Sunny',
-        },
-        Temperature: {
-          Maximum: {
-            Value: 75,
-          },
-          Minimum: {
-            Value: 60,
-          },
-        },
-      },
-      {
-        Date: '2021-10-02T07:00:00-07:00',
-        Day: {
-          Icon: 2,
-          IconPhrase: 'Partly Cloudy',
-        },
-        Temperature: {
-          Maximum: {
-            Value: 70,
-          },
-          Minimum: {
-            Value: 55,
-          },
-        },
-      },
-      {
-        Date: '2021-10-03T07:00:00-07:00',
-        Day: {
-          Icon: 3,
-          IconPhrase: 'Cloudy',
-        },
-        Temperature: {
-          Maximum: {
-            Value: 65,
-          },
-          Minimum: {
-            Value: 50,
-          },
-        },
-      },
-      {
-        Date: '2021-10-04T07:00:00-07:00',
-        Day: {
-          Icon: 4,
-          IconPhrase: 'Rain',
-        },
-        Temperature: {
-          Maximum: {
-            Value: 60,
-          },
-          Minimum: {
-            Value: 45,
-          },
-        },
-      },
-    ],
-  };
-
   const getAI = async () => {
+    const checkAudioFileExists = async () => {
+      try {
+        const response = await fetch(audioFile, { method: 'HEAD' });
+        return response.ok;
+      } catch (error) {
+        return false;
+      }
+    };
+
+    const waitForAudioFile = async () => {
+      const maxRetries = 10;
+      const delay = 500; // 500ms
+      for (let i = 0; i < maxRetries; i++) {
+        if (await checkAudioFileExists()) {
+          audioRef.current.play();
+          return;
+        }
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+      console.error('Audio file was not created in time.');
+    };
+
     const data = {
       question: apiText,
       weatherData: {
@@ -168,8 +130,6 @@ const MirrorUi = () => {
       },
     };
 
-    console.log('Data', data);
-
     try {
       const response = await fetch('/ai', {
         method: 'POST',
@@ -181,7 +141,7 @@ const MirrorUi = () => {
 
       const res = await response.json();
 
-      setApiResponse(res.answer);
+      await Promise.all([setApiResponse(res.answer), waitForAudioFile()]);
     } catch (error) {
       console.error('AI request failed:', error);
       setApiResponse(`Error: ${error.message}`);
@@ -189,6 +149,7 @@ const MirrorUi = () => {
   };
 
   useEffect(() => {
+    clearAudioFile();
     dadJokeAPI();
     newsAPI();
     // getSurfReport();

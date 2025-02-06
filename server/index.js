@@ -2,6 +2,8 @@ const express = require('express');
 const axios = require('axios');
 const { OpenAI } = require('openai');
 const Redis = require('ioredis');
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
 const redis = new Redis();
@@ -30,7 +32,6 @@ app.get('/location', (req, res) => {
 
       const cachedData = await redis.get(`city:${city}`);
       if (cachedData) {
-        console.log('✅ Serving from Redis cache');
         return res.json(JSON.parse(cachedData));
       }
 
@@ -76,8 +77,24 @@ app.get('/news', (req, res) => {
     .catch((err) => console.log('No news is bad news :(', err));
 });
 
+app.post('/clear-audio', (req, res) => {
+  const speechFile = path.join(__dirname, '../client/src/assets/speech.mp3');
+  fs.open(speechFile, 'w', (err, fd) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    fs.write(fd, '', (err) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      res.status(200).json({ message: 'Audio file cleared' });
+    });
+  });
+});
+
 app.post('/ai', async (req, res) => {
-  console.log('himom!', req.body);
+  const speechFile = path.join(__dirname, '../client/src/assets/speech.mp3');
+
   try {
     const {
       question,
@@ -102,9 +119,18 @@ app.post('/ai', async (req, res) => {
       messages: [{ role: 'system', content: prompt }],
     });
 
-    res.json({ answer: gptResponse.choices[0].message.content });
+    const mp3 = await openai.audio.speech.create({
+      model: 'tts-1',
+      voice: 'echo',
+      input: gptResponse.choices[0].message.content,
+    });
+
+    const buffer = Buffer.from(await mp3.arrayBuffer());
+    await fs.promises.writeFile(speechFile, buffer);
+
+    res.status(200).json({ answer: gptResponse.choices[0].message.content });
   } catch (error) {
-    res.status(500).json({ error: 'AI request failed' });
+    res.status(500).json({ error: error.message });
   }
 });
 
