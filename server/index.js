@@ -81,12 +81,17 @@ app.post('/ai', async (req, res) => {
   try {
     const {
       question,
-      weatherData: { location, currentWeather, forecast },
+      weatherData: { location, currentWeather, forecasts },
     } = req.body;
 
-    console.log('himom', currentWeather);
+    const forecastMap = forecasts
+      .map(
+        (forecast) =>
+          `Day ${forecast.Date}. High/Low (F): ${forecast.Temperature.Maximum.Value}/${forecast.Temperature.Minimum.Value}. Daytime: ${forecast.Day.IconPhrase} and is it raining? ${forecast.Day.HasPrecipitation}, Nighttime: ${forecast.Night.IconPhrase}and is it raining? ${forecast.Night.HasPrecipitation}`
+      )
+      .join('\n');
 
-    const prompt = `You are an AI-powered Magic Mirror. The location is: ${location}. The current temperature in fahrenheit is: ${currentWeather.temperature}, the weather is ${currentWeather.weatherCode} and the weather forecast is: ${forecast}. 
+    const prompt = `You are an AI-powered Magic Mirror. The location is: ${location}. The current temperature in fahrenheit is: ${currentWeather.temperature}, the weather is ${currentWeather.weatherCode} and the weather forecast is: ${forecastMap}. 
     User asks: "${question}". Respond in a helpful way.
     Only respond with helpful weather-related information. If the question is unrelated to weather, 
     politely say: "I'm here to provide weather updates. Try asking something like 'Should I wear a jacket today?' 

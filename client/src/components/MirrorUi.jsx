@@ -156,9 +156,15 @@ const MirrorUi = () => {
     const data = {
       question: apiText,
       weatherData: {
-        location: fakeWeather.location,
-        currentWeather: fakeWeather.currentWeather,
-        forecast: fakeWeather.forecasts,
+        location: mirrorInfo.location,
+        currentWeather: {
+          temperature: mirrorInfo.currentWeather.temperature,
+          currentWeather: weatherTranslator(
+            mirrorInfo.currentWeather.weatherCode
+          ),
+          description: mirrorInfo.currentWeather.description,
+        },
+        forecasts: mirrorInfo.forecasts,
       },
     };
 
@@ -211,13 +217,13 @@ const MirrorUi = () => {
           weatherBool={weatherBool}
         />
         <div>
-          {/* Ask me anything! (About the weather):
+          Ask me anything! (About the weather):
           <textarea
             onChange={(e) => getApiText(e.target.value)}
             value={apiText}
           ></textarea>
           <button onClick={getAI}>Show me the answer</button>
-          <p>Response: {apiResponse}</p> */}
+          <p>Response: {apiResponse}</p>
         </div>
         <DateAndTime />
       </div>
