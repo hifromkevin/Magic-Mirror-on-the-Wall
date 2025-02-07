@@ -6,6 +6,8 @@
   "scripts": {
     "start": "nodemon server",
     "build": "webpack --watch",
+    "redis-start": "brew services start redis",
+    "redis-stop": "brew services stop redis",
     "electron": "electron ."
   },
   "repository": {
