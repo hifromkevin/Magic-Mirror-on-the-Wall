@@ -59,6 +59,8 @@ const MirrorUi = () => {
 
         const [
           {
+            HasPrecipitation,
+            IsDayTime,
             Temperature: {
               Imperial: { Value },
             },

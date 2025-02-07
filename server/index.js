@@ -49,7 +49,7 @@ app.get('/location', (req, res) => {
               `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${Key}?apikey=${AccuWeatherAPI}`
             ),
             axios.get(
-              `http://dataservice.accuweather.com/currentconditions/v1/${Key}?apikey=${AccuWeatherAPI}`
+              `http://dataservice.accuweather.com/currentconditions/v1/${Key}?apikey=${AccuWeatherAPI}?details=true`
             ),
           ]);
 
@@ -97,6 +97,11 @@ app.post('/clear-audio', (req, res) => {
 
 app.post('/ai', async (req, res) => {
   const speechFile = path.join(__dirname, '../client/src/assets/speech.mp3');
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { weekday: 'long', month: 'long', day: 'numeric' };
+    return new Intl.DateTimeFormat('en-US', options).format(date);
+  };
 
   try {
     const {
@@ -107,9 +112,17 @@ app.post('/ai', async (req, res) => {
     const forecastMap = forecasts
       ?.map(
         (forecast) =>
-          `Day ${forecast.Date}. High/Low (F): ${forecast.Temperature.Maximum.Value}/${forecast.Temperature.Minimum.Value}. Daytime: ${forecast.Day.IconPhrase} and is it raining? ${forecast.Day.HasPrecipitation}, Nighttime: ${forecast.Night.IconPhrase}and is it raining? ${forecast.Night.HasPrecipitation}`
+          `Day ${formatDate(forecast.Date)}. High/Low (F): ${
+            forecast.Temperature.Maximum.Value
+          }/${forecast.Temperature.Minimum.Value}. Daytime: ${
+            forecast.Day.IconPhrase
+          } and is it raining? ${forecast.Day.HasPrecipitation}, Nighttime: ${
+            forecast.Night.IconPhrase
+          }and is it raining? ${forecast.Night.HasPrecipitation}`
       )
       .join('\n');
+
+    console.log('himom?', forecastMap);
 
     const prompt = `You are an AI-powered Magic Mirror. The location is: ${location}. The current temperature in fahrenheit is: ${currentWeather.temperature}, the weather is ${currentWeather.weatherCode} and the weather forecast is: ${forecastMap}. 
     User asks: "${question}". Respond in a helpful way.
@@ -118,7 +131,7 @@ app.post('/ai', async (req, res) => {
     or 'Will it rain later?'."`;
 
     const gptResponse = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4o-mini',
       messages: [{ role: 'system', content: prompt }],
     });
 
