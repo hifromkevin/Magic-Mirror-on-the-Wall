@@ -9,7 +9,12 @@ const Weather = ({
   weatherIcons,
   weatherTranslator,
   weatherBool,
+  weatherError,
 }) => {
+  if (weatherError) {
+    return <div className="weather"> No Weather Found</div>;
+  }
+
   if (weatherBool) {
     return (
       <div className="weather">

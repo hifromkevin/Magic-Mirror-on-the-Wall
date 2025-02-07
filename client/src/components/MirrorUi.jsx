@@ -17,6 +17,7 @@ const MirrorUi = () => {
     weatherBool: false,
     newsBool: false,
   });
+  const [weatherError, setWeatherError] = useState(false);
   const [apiText, getApiText] = useState('');
   const [apiResponse, setApiResponse] = useState('');
   const audioRef = useRef(new Audio(audioFile));
@@ -54,12 +55,7 @@ const MirrorUi = () => {
     await fetch('/location')
       .then((response) => response.json())
       .then((res) => {
-        const {
-          city,
-          region,
-          currentWeather,
-          weatherForecast: { DailyForecasts },
-        } = res;
+        const { city, region, currentWeather, weatherForecast } = res;
 
         const [
           {
@@ -79,11 +75,14 @@ const MirrorUi = () => {
             description: WeatherText,
           },
           location: `${city}, ${region}`,
-          forecasts: DailyForecasts.slice(1, 5),
+          forecasts: weatherForecast?.DailyForecasts?.slice(1, 5) || [],
           weatherBool: true,
         }));
       })
-      .catch((error) => console.error('Off the grid! :(', error));
+      .catch((error) => {
+        console.error('Off the grid! :(', error);
+        setWeatherError(true);
+      });
   };
 
   const getSurfReport = async () => {
@@ -118,15 +117,15 @@ const MirrorUi = () => {
     const data = {
       question: apiText,
       weatherData: {
-        location: mirrorInfo.location,
+        location: mirrorInfo?.location,
         currentWeather: {
-          temperature: mirrorInfo.currentWeather.temperature,
+          temperature: mirrorInfo?.currentWeather?.temperature,
           currentWeather: weatherTranslator(
-            mirrorInfo.currentWeather.weatherCode
+            mirrorInfo?.currentWeather?.weatherCode
           ),
-          description: mirrorInfo.currentWeather.description,
+          description: mirrorInfo?.currentWeather?.description,
         },
-        forecasts: mirrorInfo.forecasts,
+        forecasts: mirrorInfo?.forecasts,
       },
     };
 
@@ -176,6 +175,7 @@ const MirrorUi = () => {
           weatherTranslator={weatherTranslator}
           weatherIcons={weatherIcons}
           weatherBool={weatherBool}
+          weatherError={weatherError}
         />
         <div>
           Ask me anything! (About the weather):
