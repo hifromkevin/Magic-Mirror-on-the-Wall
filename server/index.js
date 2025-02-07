@@ -64,10 +64,13 @@ app.get('/location', (req, res) => {
 
         res.status(200).send(responseData);
       } catch (error) {
-        console.log('Raindrops keep falling on my head: ', err);
+        res.status(400).send(error);
       }
     })
-    .catch((err) => console.log('Off the grid :(', err));
+    .catch((err) => {
+      console.log('Off the grid :(', err);
+      res.status(400).send(err);
+    });
 });
 
 app.get('/news', (req, res) => {
@@ -102,7 +105,7 @@ app.post('/ai', async (req, res) => {
     } = req.body;
 
     const forecastMap = forecasts
-      .map(
+      ?.map(
         (forecast) =>
           `Day ${forecast.Date}. High/Low (F): ${forecast.Temperature.Maximum.Value}/${forecast.Temperature.Minimum.Value}. Daytime: ${forecast.Day.IconPhrase} and is it raining? ${forecast.Day.HasPrecipitation}, Nighttime: ${forecast.Night.IconPhrase}and is it raining? ${forecast.Night.HasPrecipitation}`
       )
