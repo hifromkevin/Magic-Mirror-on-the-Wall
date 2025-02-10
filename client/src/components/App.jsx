@@ -2,6 +2,7 @@ import 'babel-polyfill';
 import React, { useState, useEffect } from 'react';
 
 import MirrorUi from './MirrorUi.jsx';
+import WakeWord from './WakeWord.jsx';
 
 // const SpeechRecognition =
 //   window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -11,6 +12,8 @@ import MirrorUi from './MirrorUi.jsx';
 // mic.continuous = true;
 // mic.interimResults = true;
 // mic.lang = 'en-US';
+
+// navigator.mediaDevices.getUserMedia({ audio: true });
 
 const App = () => {
   const [selectedPage, setSelectedPage] = useState('mirror');
@@ -42,7 +45,10 @@ const App = () => {
   return (
     <div className="appContainer">
       <div className="appSubContainer">
-        {selectedPage === 'mirror' ? <MirrorUi /> : <p></p>}
+        {/* {selectedPage === 'mirror' ? <MirrorUi /> : <p></p>} */}
+        {/* <WakeWord> */}
+        <MirrorUi />
+        {/* </WakeWord> */}
       </div>
     </div>
   );

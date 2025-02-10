@@ -8,6 +8,7 @@ const config = {
   SurfAPI: 'ENTER_MAGIC_SEAWEED_API_KEY_HERE', // https://magicseaweed.com/developer/api
   ipInfoAPI: 'ENTER_IP_INFO_API_HERE', //https://ipinfo.io/
   openAiAPI: 'ENTER_OPENAI_API_HERE', // https://platform.openai.com/
+  picovoiceAPI: 'ENTER_PICOVOICE_API_HERE', // https://picovoice.ai/ (Porcupine)
 };
 
 module.exports = config;
