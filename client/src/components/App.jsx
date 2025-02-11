@@ -46,9 +46,9 @@ const App = () => {
     <div className="appContainer">
       <div className="appSubContainer">
         {/* {selectedPage === 'mirror' ? <MirrorUi /> : <p></p>} */}
-        {/* <WakeWord> */}
-        <MirrorUi />
-        {/* </WakeWord> */}
+        <WakeWord>
+          <MirrorUi />
+        </WakeWord>
       </div>
     </div>
   );

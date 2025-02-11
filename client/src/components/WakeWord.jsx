@@ -2,8 +2,8 @@ import 'babel-polyfill';
 import React, { Fragment, useEffect } from 'react';
 
 import { usePorcupine } from '@picovoice/porcupine-react';
-import mirrorOnTheWallKeyword from '../assets/porcupine/mirrorOnTheWallKeyword';
-import porcupineParams from '../assets/porcupine/porcupine_params';
+import mirrorOnTheWall from '../assets/porcupine/mirrorOnTheWall';
+import porcupineParams from '../assets/porcupine/porcupineParams';
 import { picovoiceAPI } from '../config/index';
 
 const WakeWord = ({ children }) => {
@@ -20,29 +20,38 @@ const WakeWord = ({ children }) => {
   } = usePorcupine();
 
   const porcupineKeyword = {
-    base64: mirrorOnTheWallKeyword,
+    base64: mirrorOnTheWall,
     label: 'Mirror on the Wall',
   };
+  const porcupineModel = { base64: porcupineParams };
 
   useEffect(() => {
-    init(picovoiceAPI, porcupineKeyword, { base64: porcupineParams });
+    // NOTE: I think this is failing due to using API Key in demo (hence using my 1 license)
+    const initialize = async () =>
+      await init(picovoiceAPI, [porcupineKeyword], porcupineModel);
+    initialize();
   }, []);
 
   useEffect(() => {
-    start();
+    console.log('himom! you are here');
+    const startPorcupine = async () => await start();
+    startPorcupine();
   }, [isLoaded]);
 
-  useEffect(() => {
-    if (keywordDetection !== null) {
-      console.log('himom!', keywordDetection);
-    }
-  }, [keywordDetection]);
+  // useEffect(() => {
+  //   // if (keywordDetection !== null) {
+  //   //   console.log('himom keywordDetection!', keywordDetection);
+  //   // }
+  //   // console.log('himom keywordDetection!2', keywordDetection);
+  //   // start();
+  // }, [keywordDetection]);
 
   return (
     <div>
       <p>Is Listening: {JSON.stringify(isListening)}</p>
       <p>Is Loaded: {JSON.stringify(isLoaded)}</p>
-      <p>Error: {JSON.stringify(error)}</p>
+      {console.log('himom error!', error)}
+
       {children}
     </div>
   );
