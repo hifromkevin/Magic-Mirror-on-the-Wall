@@ -1,7 +1,7 @@
 # Installed Docker Extension onto VSCode
 # Created Dockerfile
 
-FROM node:23.6.1-alpine3.13
+FROM node:16.5.0
 
 WORKDIR /app
 
@@ -14,6 +14,9 @@ RUN npm install
 # Copy the rest of the files to local working directory
 # This creates a problem due to node_modules being copied, so we need to add .dockerignore file
 COPY . . 
+
+# Build the application
+RUN npm run build-static
 
 ENV PORT=8080
 
