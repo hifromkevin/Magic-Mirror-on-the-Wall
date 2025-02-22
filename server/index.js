@@ -6,9 +6,12 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const redis = new Redis();
+const redis = new Redis({
+  host: process.env.REDIS_HOST || 'localhost',
+  port: process.env.REDIS_PORT || 6379,
+});
 
-const port = 3005;
+const port = process.env.PORT || 3005;
 
 const {
   AccuWeatherAPI,
