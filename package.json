@@ -1,17 +1,22 @@
 {
   "name": "magic-mirror-on-the-wall",
   "version": "1.0.0",
+  "private": true,
   "description": "The UI for my Raspberry Pi magic mirror build. ",
   "main": "server",
   "scripts": {
     "start": "nodemon server",
     "build": "webpack --watch",
     "build-static": "webpack",
+    "docker-run": "docker-compose up",
+    "docker-build": "docker-compose up --build",
     "redis-start": "brew services start redis",
     "redis-stop": "brew services stop redis",
     "electron": "electron .",
     "test": "jest",
-    "coverage": "jest --coverage"
+    "test:watch": "jest --watch --collectCoverage=false",
+    "coverage": "jest --coverage",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -24,6 +29,7 @@
   },
   "homepage": "https://github.com/hifromkevin/Magic-Mirror-on-the-Wall#readme",
   "dependencies": {
+    "dotenv": "^16.4.7",
     "express": "^4.18.2",
     "ioredis": "^5.4.2",
     "nodemon": "^3.0.3",
@@ -45,6 +51,7 @@
     "css-loader": "^6.10.0",
     "electron": "^28.2.1",
     "file-loader": "^6.2.0",
+    "husky": "^9.1.7",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "sass": "^1.70.0",
