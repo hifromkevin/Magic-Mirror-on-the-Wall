@@ -37,7 +37,6 @@ app.get('/location', (req, res) => {
       if (cachedData) {
         return res.json(JSON.parse(cachedData));
       }
-
       try {
         const getLocationCode = await axios.get(
           `http://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=${AccuWeatherAPI}&q=${postal}`

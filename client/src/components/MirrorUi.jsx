@@ -17,6 +17,7 @@ const MirrorUi = () => {
     weatherBool: false,
     newsBool: false,
   });
+  const [dadJokeText, setDadJokeText] = useState('');
   const [weatherError, setWeatherError] = useState(false);
   const [apiText, getApiText] = useState('');
   const [apiResponse, setApiResponse] = useState('');
@@ -33,9 +34,13 @@ const MirrorUi = () => {
   };
 
   const dadJokeAPI = async () => {
-    let jokeData = await dadJokeApi();
-
-    setMirrorInfo((state) => ({ ...state, dadJoke: jokeData.joke }));
+    try {
+      let { joke } = await dadJokeApi();
+      setDadJokeText(joke);
+    } catch (error) {
+      console.error('Failed to fetch dad joke:', error);
+      setDadJokeText('No dad joke found');
+    }
   };
 
   const newsAPI = async () => {
@@ -157,15 +162,8 @@ const MirrorUi = () => {
     getLocationAndWeatherAPI();
   }, []);
 
-  const {
-    currentWeather,
-    dadJoke,
-    forecasts,
-    location,
-    news,
-    newsBool,
-    weatherBool,
-  } = mirrorInfo;
+  const { currentWeather, forecasts, location, news, newsBool, weatherBool } =
+    mirrorInfo;
 
   return (
     <div className="main">
@@ -191,7 +189,7 @@ const MirrorUi = () => {
         <DateAndTime />
       </div>
       <div className="section">
-        <WelcomeText dadJoke={dadJoke} />
+        <WelcomeText dadJoke={dadJokeText} />
       </div>
       <div className="section">
         <Headlines news={news} newsBool={newsBool} />
