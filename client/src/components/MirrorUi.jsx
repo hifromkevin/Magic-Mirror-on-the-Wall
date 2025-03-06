@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import DateAndTime from './DateAndTime.jsx';
 import Headlines from './Headlines.jsx';
 import Weather from './Weather.jsx';
-import WelcomeText from './DadJoke.jsx';
+import DadJoke from './DadJoke.jsx';
 
 import audioFile from '../assets/speech.mp3';
 
@@ -189,7 +189,7 @@ const MirrorUi = () => {
         <DateAndTime />
       </div>
       <div className="section">
-        <WelcomeText dadJoke={dadJokeText} />
+        <DadJoke dadJoke={dadJokeText} />
       </div>
       <div className="section">
         <Headlines news={news} newsBool={newsBool} />
