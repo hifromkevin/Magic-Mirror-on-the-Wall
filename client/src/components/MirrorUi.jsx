@@ -21,6 +21,7 @@ const MirrorUi = () => {
   const [weatherError, setWeatherError] = useState(false);
   const [apiText, getApiText] = useState('');
   const [apiResponse, setApiResponse] = useState('');
+  const [aiIsLoading, setAiIsLoading] = useState(false);
   const audioRef = useRef(new Audio(audioFile));
 
   const { weatherIcons, weatherTranslator } = weatherInfo;
@@ -60,6 +61,7 @@ const MirrorUi = () => {
     await fetch('/location')
       .then((response) => response.json())
       .then((res) => {
+        console.log('himom!', res);
         const { city, region, currentWeather, weatherForecast } = res;
 
         const [
@@ -99,6 +101,8 @@ const MirrorUi = () => {
   };
 
   const getAI = async () => {
+    setAiIsLoading(true);
+
     const checkAudioFileExists = async () => {
       try {
         const response = await fetch(audioFile, { method: 'HEAD' });
@@ -108,11 +112,12 @@ const MirrorUi = () => {
       }
     };
 
-    const waitForAudioFile = async () => {
+    const waitForAudioFile = async (url) => {
       const maxRetries = 10;
       const delay = 500; // 500ms
       for (let i = 0; i < maxRetries; i++) {
-        if (await checkAudioFileExists()) {
+        if (await checkAudioFileExists(url)) {
+          audioRef.current.src = url;
           audioRef.current.play();
           return;
         }
@@ -134,6 +139,7 @@ const MirrorUi = () => {
         },
         forecasts: mirrorInfo?.forecasts,
       },
+      headlines: mirrorInfo?.news,
     };
 
     try {
@@ -147,10 +153,14 @@ const MirrorUi = () => {
 
       const res = await response.json();
 
-      await Promise.all([setApiResponse(res.answer), waitForAudioFile()]);
+      const cacheBustingUrl = `${audioFile}?t=${new Date().getTime()}`;
+      await waitForAudioFile(cacheBustingUrl);
+      setApiResponse(res.answer);
     } catch (error) {
       console.error('AI request failed:', error);
       setApiResponse(`Error: ${error.message}`);
+    } finally {
+      setAiIsLoading(false);
     }
   };
 
@@ -184,7 +194,9 @@ const MirrorUi = () => {
             value={apiText}
           ></textarea>
           <button onClick={getAI}>Show me the answer</button>
-          <p>Response: {apiResponse}</p>
+          <p>
+            Response: {aiIsLoading ? 'Loading AI response...' : apiResponse}
+          </p>
         </div>
         <DateAndTime />
       </div>
