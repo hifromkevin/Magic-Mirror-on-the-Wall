@@ -62,7 +62,7 @@ app.get('/location', (req, res) => {
           currentWeather,
         };
 
-        await redis.setex(`city:${city}`, 600, JSON.stringify(responseData));
+        await redis.setex(`city:${city}`, 3600, JSON.stringify(responseData));
 
         res.status(200).send(responseData);
       } catch (error) {
@@ -84,15 +84,31 @@ app.get('/news', (req, res) => {
 
 app.post('/clear-audio', (req, res) => {
   const speechFile = path.join(__dirname, '../client/src/assets/speech.mp3');
-  fs.open(speechFile, 'w', (err, fd) => {
+
+  fs.stat(speechFile, (err, stats) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
-    fs.write(fd, '', (err) => {
+    console.log(`File size before clearing: ${stats.size} bytes`);
+
+    fs.open(speechFile, 'w', (err, fd) => {
       if (err) {
         return res.status(500).json({ error: err.message });
       }
-      res.status(200).json({ message: 'Audio file cleared' });
+      fs.write(fd, '', (err) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+
+        // Log the size of the file after clearing
+        fs.stat(speechFile, (err, stats) => {
+          if (err) {
+            return res.status(500).json({ error: err.message });
+          }
+          console.log(`File size after clearing: ${stats.size} bytes`);
+          res.status(200).json({ message: 'Audio file cleared' });
+        });
+      });
     });
   });
 });
@@ -109,45 +125,84 @@ app.post('/ai', async (req, res) => {
     const {
       question,
       weatherData: { location, currentWeather, forecasts },
+      headlines,
     } = req.body;
 
-    const forecastMap = forecasts
-      ?.map(
-        (forecast) =>
-          `Day ${formatDate(forecast.Date)}. High/Low (F): ${
-            forecast.Temperature.Maximum.Value
-          }/${forecast.Temperature.Minimum.Value}. Daytime: ${
-            forecast.Day.IconPhrase
-          } and is it raining? ${forecast.Day.HasPrecipitation}, Nighttime: ${
-            forecast.Night.IconPhrase
-          }and is it raining? ${forecast.Night.HasPrecipitation}`
-      )
-      .join('\n');
+    const forecastMap = forecasts?.length
+      ? forecasts
+          ?.map(
+            (forecast) =>
+              `Day ${formatDate(forecast.Date)}. High/Low (F): ${
+                forecast.Temperature.Maximum.Value
+              }/${forecast.Temperature.Minimum.Value}. Daytime: ${
+                forecast.Day.IconPhrase
+              } and is it raining? ${
+                forecast.Day.HasPrecipitation
+              }, Nighttime: ${forecast.Night.IconPhrase}and is it raining? ${
+                forecast.Night.HasPrecipitation
+              }`
+          )
+          .join('\n')
+      : 'No forecast data available.';
 
-    console.log('himom?', forecastMap);
-
-    const prompt = `You are an AI-powered Magic Mirror. The location is: ${location}. The current temperature in fahrenheit is: ${currentWeather.temperature}, the weather is ${currentWeather.weatherCode} and the weather forecast is: ${forecastMap}. 
-    User asks: "${question}". Respond in a helpful way.
-    Only respond with helpful weather-related information. If the question is unrelated to weather, 
-    politely say: "I'm here to provide weather updates. Try asking something like 'Should I wear a jacket today?' 
-    or 'Will it rain later?'."`;
+    const headlineMap = headlines?.length
+      ? headlines
+          ?.map(
+            (headline) =>
+              `${headline.title} by ${
+                headline.author
+              }. Headline Content: ${headline.content
+                .split(' ')
+                .slice(0, 50)
+                .join(' ')}.`
+          )
+          .join('\n')
+      : 'No news available.';
 
     const gptResponse = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
-      messages: [{ role: 'system', content: prompt }],
+      // messages: [{ role: 'system', content: prompt }],
+      messages: [
+        {
+          role: 'system',
+          content: `You are an AI-powered Magic Mirror. The location is: ${location}. 
+          The current temperature in Fahrenheit is: ${currentWeather.temperature}, 
+          the weather is ${currentWeather.weatherCode}, and the weather forecast is: ${forecastMap}. 
+          You also are aware of recent news: ${headlineMap}. 
+    
+          Only respond with helpful weather-related or news-related information. 
+          If the user asks about a news article, listen for the title or author and read the "Headline Content." 
+          If the question is unrelated to weather or news, respond with: 
+          "I'm here to provide weather updates and news headlines. Try asking something like 'Should I wear a jacket today?' 
+          or 'Will it rain later?', or 'Can you read me the article titled ${headlines[0].title}?'."`,
+        },
+        { role: 'user', content: question },
+      ],
     });
+
+    const responseContent = gptResponse.choices[0].message.content;
 
     const mp3 = await openai.audio.speech.create({
       model: 'tts-1',
       voice: 'echo',
-      input: gptResponse.choices[0].message.content,
+      input: responseContent,
     });
 
     const buffer = Buffer.from(await mp3.arrayBuffer());
     await fs.promises.writeFile(speechFile, buffer);
 
-    res.status(200).json({ answer: gptResponse.choices[0].message.content });
+    fs.stat(speechFile, (err, stats) => {
+      if (err) {
+        console.error('Error checking file size after writing:', err);
+      } else {
+        console.log(`File size after writing: ${stats.size} bytes`);
+      }
+    });
+
+    res.status(200).json({ answer: responseContent });
   } catch (error) {
+    console.log('The humans win: ', error.response?.data || error.message);
+
     res.status(500).json({ error: error.message });
   }
 });
