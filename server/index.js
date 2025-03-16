@@ -51,7 +51,7 @@ app.get('/location', (req, res) => {
               `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${Key}?apikey=${AccuWeatherAPI}`
             ),
             axios.get(
-              `http://dataservice.accuweather.com/currentconditions/v1/${Key}?apikey=${AccuWeatherAPI}?details=true`
+              `http://dataservice.accuweather.com/currentconditions/v1/${Key}?apikey=${AccuWeatherAPI}&details=true`
             ),
           ]);
 
@@ -149,19 +149,16 @@ app.post('/ai', async (req, res) => {
       ? headlines
           ?.map(
             (headline) =>
-              `${headline.title} by ${
-                headline.author
-              }. Headline Content: ${headline.content
-                .split(' ')
-                .slice(0, 50)
-                .join(' ')}.`
+              `${headline.title} by ${headline.author}. Headline Content: ${
+                headline?.content &&
+                headline?.content.split(' ').slice(0, 50).join(' ')
+              }.`
           )
           .join('\n')
       : 'No news available.';
 
     const gptResponse = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
-      // messages: [{ role: 'system', content: prompt }],
       messages: [
         {
           role: 'system',
@@ -191,15 +188,14 @@ app.post('/ai', async (req, res) => {
     const buffer = Buffer.from(await mp3.arrayBuffer());
     await fs.promises.writeFile(speechFile, buffer);
 
-    fs.stat(speechFile, (err, stats) => {
-      if (err) {
-        console.error('Error checking file size after writing:', err);
-      } else {
-        console.log(`File size after writing: ${stats.size} bytes`);
-      }
-    });
-
-    res.status(200).json({ answer: responseContent });
+    // Ensure the file is written completely before sending the response
+    const stats = await fs.promises.stat(speechFile);
+    if (stats.size > 0) {
+      console.log(`File size after writing: ${stats.size} bytes`);
+      res.status(200).json({ answer: responseContent });
+    } else {
+      throw new Error('Audio file is empty');
+    }
   } catch (error) {
     console.log('The humans win: ', error.response?.data || error.message);
 

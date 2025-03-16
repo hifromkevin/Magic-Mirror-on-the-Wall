@@ -61,7 +61,6 @@ const MirrorUi = () => {
     await fetch('/location')
       .then((response) => response.json())
       .then((res) => {
-        console.log('himom!', res);
         const { city, region, currentWeather, weatherForecast } = res;
 
         const [
@@ -113,11 +112,11 @@ const MirrorUi = () => {
     };
 
     const waitForAudioFile = async (url) => {
-      const maxRetries = 10;
-      const delay = 500; // 500ms
+      const maxRetries = 100;
+      const delay = 5000; // 5000ms
       for (let i = 0; i < maxRetries; i++) {
-        if (await checkAudioFileExists(url)) {
-          audioRef.current.src = url;
+        if (await checkAudioFileExists()) {
+          audioRef.current.src = audioFile;
           audioRef.current.play();
           return;
         }
@@ -153,8 +152,7 @@ const MirrorUi = () => {
 
       const res = await response.json();
 
-      const cacheBustingUrl = `${audioFile}?t=${new Date().getTime()}`;
-      await waitForAudioFile(cacheBustingUrl);
+      await waitForAudioFile();
       setApiResponse(res.answer);
     } catch (error) {
       console.error('AI request failed:', error);
