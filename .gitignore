@@ -72,4 +72,10 @@ bundle.js
 #Hide API keys
 **/config/index.js
 
+# Picovoice Porcupine wake word 
+*.ppn
+client/src/config/wakeWord/Magic-Mirror_en_wasm_v3_0_0
+client/src/config/wakeWord/porcupineKeywordBase64.js
+client/src/config/wakeWord/*.zip
+
 
