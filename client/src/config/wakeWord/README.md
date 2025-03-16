@@ -33,20 +33,9 @@ To use the Picovoice Porcupine Wake Word software, follow these steps:
 
      - If your wake word is "Magic Mirror", version 3 (otherwise, update the `PORCUPINE_PARAMS_PATH`): `npx pvbase64 -i client/src/config/wakeWord/porcupine_params.pv -o client/src/config/wakeWord/porcupineModelBase64.js`
 
-   - Conver your `.ppn` file to a
-     ```
-     /client/src/config/
-     ├── wakeWord/
-     │   └── wakeWord.ppn
-     ```
-
 4. **Add to `.gitignore`**:
 
-   - Ensure that the `.ppn` file is not tracked by Git by adding the following line to your `.gitignore` file:
-     ```
-     # Ignore Picovoice .ppn file
-     config/wakeWord.ppn
-     ```
+   - Ensure that the `.ppn` and keyword files are not tracked by Git by adding the following line to your `.gitignore` file, if named differently than listed above.
 
 5. **Set the Environment Variable**:
 
