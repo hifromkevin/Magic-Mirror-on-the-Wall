@@ -12,7 +12,7 @@ import { apiCalls, weatherInfo } from '../lib';
 
 const { dadJokeApi, surfApi } = apiCalls;
 
-const MirrorUi = () => {
+const MirrorUi = ({ setVoiceTranscript, voiceTranscript }) => {
   const [mirrorInfo, setMirrorInfo] = useState({
     weatherBool: false,
     newsBool: false,
@@ -125,8 +125,11 @@ const MirrorUi = () => {
       console.error('Audio file was not created in time.');
     };
 
+    console.log('Voice Transcript: ', voiceTranscript);
+
     const data = {
-      question: apiText,
+      // question: apiText,
+      question: voiceTranscript,
       weatherData: {
         location: mirrorInfo?.location,
         currentWeather: {
@@ -170,6 +173,11 @@ const MirrorUi = () => {
     getLocationAndWeatherAPI();
   }, []);
 
+  useEffect(() => {
+    voiceTranscript.length && getAI();
+    setVoiceTranscript('');
+  }, [voiceTranscript]);
+
   const { currentWeather, forecasts, location, news, newsBool, weatherBool } =
     mirrorInfo;
 
@@ -185,7 +193,7 @@ const MirrorUi = () => {
           weatherBool={weatherBool}
           weatherError={weatherError}
         />
-        <div>
+        {/* <div>
           Ask me anything! (About the weather):
           <textarea
             onChange={(e) => getApiText(e.target.value)}
@@ -195,7 +203,7 @@ const MirrorUi = () => {
           <p>
             Response: {aiIsLoading ? 'Loading AI response...' : apiResponse}
           </p>
-        </div>
+        </div> */}
         <DateAndTime />
       </div>
       <div className="section">

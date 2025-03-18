@@ -8,17 +8,21 @@
 	height: 100vh
 	box-sizing: border-box
 
-.appContainer::before 
+.appBorder
+	transition: appear 2s
+
+.appBorder::before 
+	animation: animate-border 6s linear infinite
+	background: repeating-linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet, red)
+	background-size: 200% auto
 	content: ''
+	padding: 2px
 	position: absolute
 	top: 0
 	left: 0
 	right: 0
 	bottom: 0
-	padding: 2px
-	background: repeating-linear-gradient(90deg,red,orange,yellow,green,cyan,blue,violet,red)
-	background-size: 200% auto
-	animation: animate-border 6s linear infinite
+	transition: appear 2s
 	z-index: -1
 
 

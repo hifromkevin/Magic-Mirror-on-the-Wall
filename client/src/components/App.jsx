@@ -2,6 +2,7 @@ import 'babel-polyfill';
 import React, { useState, useEffect } from 'react';
 
 import MirrorUi from './MirrorUi.jsx';
+import WakeWord from './WakeWord.jsx';
 
 // const SpeechRecognition =
 //   window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -14,35 +15,26 @@ import MirrorUi from './MirrorUi.jsx';
 
 const App = () => {
   const [selectedPage, setSelectedPage] = useState('mirror');
-
-  // const voiceControl = () => {
-  //   mic.onspeechstart = () => {
-  //     console.log('Speech started.');
-  //   };
-
-  //   mic.onresult = (e) => {
-  //     let current = e.resultIndex;
-
-  //     const transcript = e.results[current][0].transcript;
-  //     console.log('Spoken word: ', transcript);
-
-  //     if (transcript === 'magic mirror on the wall') {
-  //       setSelectedPage('mirror');
-  //     }
-
-  //     mic.onspeechend = () => {
-  //       mic.stop();
-  //       console.log('Voice stopped.');
-  //     };
-  //   };
-  // };
-
-  // useEffect(voiceControl, []);
+  const [wakeWordIsActive, setWakeWordIsActive] = useState(false);
+  const [voiceTranscript, setVoiceTranscript] = useState('');
 
   return (
-    <div className="appContainer">
+    <div
+      className={wakeWordIsActive ? `appContainer appBorder` : `appContainer`}
+    >
       <div className="appSubContainer">
-        {selectedPage === 'mirror' ? <MirrorUi /> : <p></p>}
+        {/* {selectedPage === 'mirror' ? <MirrorUi /> : <p></p>} */}
+        <WakeWord
+          setVoiceTranscript={setVoiceTranscript}
+          setWakeWordIsActive={setWakeWordIsActive}
+          wakeWordIsActive={wakeWordIsActive}
+        >
+          <MirrorUi
+            setVoiceTranscript={setVoiceTranscript}
+            voiceTranscript={voiceTranscript}
+            wakeWordIsActive={wakeWordIsActive}
+          />
+        </WakeWord>
       </div>
     </div>
   );
