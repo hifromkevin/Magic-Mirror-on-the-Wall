@@ -8,17 +8,16 @@ const getHour = (n) => {
   return n;
 };
 
-const lessThanTen = (n) => {
-  return (n < 10) ? ('0' + n) : n;
-};
+const lessThanTen = (n) => (n < 10 ? '0' + n : n);
 
 const getTime = (currentDate) => {
   const second = lessThanTen(currentDate.getSeconds());
   const minute = lessThanTen(currentDate.getMinutes());
   const hour = getHour(currentDate.getHours());
 
-  const timeOfDay = (currentDate.getHours() < 12) ? 'AM' : 'PM';
-  return `${hour}:${minute}:${second} ${timeOfDay}`;
+  const timeOfDay = currentDate.getHours() < 12 ? 'AM' : 'PM';
+  // return `${hour}:${minute}:${second} ${timeOfDay}`;
+  return `${hour}:${minute} ${timeOfDay}`;
 };
 
 exports.getTime = getTime;
