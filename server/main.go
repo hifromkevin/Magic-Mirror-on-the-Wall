@@ -21,7 +21,7 @@ var (
 
 func init() {
 	if os.Getenv("GO_ENV") != "production" {
-		if err := godotenv.Load(); err != nil {
+		if err := godotenv.Load("../.env"); err != nil {
 			log.Println("Warning: .env file not found")
 		}
 	}
@@ -145,8 +145,14 @@ func clearAudio(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	// Initialize the router
 	router := mux.NewRouter()
+
+	staticDir := "../client/dist"
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir(staticDir)))
+	
+	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, staticDir+"/index.html")
+	})
 
 	// Routes
 	router.HandleFunc("/location", getLocation).Methods("GET")
