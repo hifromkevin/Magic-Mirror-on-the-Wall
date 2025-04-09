@@ -25,54 +25,45 @@ const openai = new OpenAI({ apiKey: openAiAPI });
 app.use(express.json());
 app.use(express.static(__dirname + '/../client/dist'));
 
-app.get('/location', (req, res) => {
-  axios
-    .get(`https://ipinfo.io/json?token=${ipInfoAPI}`)
-    .then(async (localeData) => {
-      const {
-        data: { city, region, postal },
-      } = localeData;
+app.get('/location', async (req, res) => {
+  try {
+    const {
+      data: { city, region, postal },
+    } = await axios.get(`https://ipinfo.io/json?token=${ipInfoAPI}`);
 
-      const cachedData = await redis.get(`city:${city}`);
-      if (cachedData) {
-        return res.json(JSON.parse(cachedData));
-      }
-      try {
-        const getLocationCode = await axios.get(
-          `http://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=${AccuWeatherAPI}&q=${postal}`
-        );
+    const cachedData = await redis.get(`city:${city}`);
+    if (cachedData) {
+      return res.json(JSON.parse(cachedData));
+    }
 
-        const [locationData] = getLocationCode.data;
-        const { Key } = locationData;
+    const locationResp = await axios.get(
+      `http://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=${AccuWeatherAPI}&q=${postal}`
+    );
+    const { Key } = locationResp.data[0];
 
-        const [{ data: weatherForecast }, { data: currentWeather }] =
-          await Promise.all([
-            axios.get(
-              `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${Key}?apikey=${AccuWeatherAPI}`
-            ),
-            axios.get(
-              `http://dataservice.accuweather.com/currentconditions/v1/${Key}?apikey=${AccuWeatherAPI}&details=true`
-            ),
-          ]);
+    const [{ data: weatherForecast }, { data: currentWeather }] =
+      await Promise.all([
+        axios.get(
+          `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${Key}?apikey=${AccuWeatherAPI}`
+        ),
+        axios.get(
+          `http://dataservice.accuweather.com/currentconditions/v1/${Key}?apikey=${AccuWeatherAPI}&details=true`
+        ),
+      ]);
 
-        const responseData = {
-          city,
-          region,
-          weatherForecast,
-          currentWeather,
-        };
+    const responseData = {
+      city,
+      region,
+      weatherForecast,
+      currentWeather,
+    };
 
-        await redis.setex(`city:${city}`, 3600, JSON.stringify(responseData));
-
-        res.status(200).send(responseData);
-      } catch (error) {
-        res.status(400).send(error);
-      }
-    })
-    .catch((err) => {
-      console.log('Off the grid :(', err);
-      res.status(400).send(err);
-    });
+    await redis.setex(`city:${city}`, 3600, JSON.stringify(responseData));
+    res.status(200).send(responseData);
+  } catch (error) {
+    console.log('Off the grid :(', error);
+    res.status(400).send(error);
+  }
 });
 
 app.get('/news', (req, res) => {
@@ -82,35 +73,21 @@ app.get('/news', (req, res) => {
     .catch((err) => console.log('No news is bad news :(', err));
 });
 
-app.post('/clear-audio', (req, res) => {
+app.post('/clear-audio', async (req, res) => {
   const speechFile = path.join(__dirname, '../client/src/assets/speech.mp3');
+  try {
+    const statsBefore = await fs.promises.stat(speechFile);
+    console.log(`File size before clearing: ${statsBefore.size} bytes`);
 
-  fs.stat(speechFile, (err, stats) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    console.log(`File size before clearing: ${stats.size} bytes`);
+    await fs.promises.writeFile(speechFile, '');
 
-    fs.open(speechFile, 'w', (err, fd) => {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
-      fs.write(fd, '', (err) => {
-        if (err) {
-          return res.status(500).json({ error: err.message });
-        }
+    const statsAfter = await fs.promises.stat(speechFile);
+    console.log(`File size after clearing: ${statsAfter.size} bytes`);
 
-        // Log the size of the file after clearing
-        fs.stat(speechFile, (err, stats) => {
-          if (err) {
-            return res.status(500).json({ error: err.message });
-          }
-          console.log(`File size after clearing: ${stats.size} bytes`);
-          res.status(200).json({ message: 'Audio file cleared' });
-        });
-      });
-    });
-  });
+    res.status(200).json({ message: 'Audio file cleared' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.post('/ai', async (req, res) => {
