@@ -42,6 +42,18 @@ func init() {
 	})
 }
 
+func enableCORS(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*") // Allow all origins
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		if r.Method == "OPTIONS" {
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
 func getLocation(w http.ResponseWriter, r *http.Request) {	
 	resp, err := http.Get("https://ipinfo.io/json?token=" + os.Getenv("IP_INFO_API"))
 	if err != nil {
@@ -69,7 +81,7 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 	}
 
 	weatherAPIKey := os.Getenv("ACCUWEATHER_API")
-	weatherResp, err := http.Get(fmt.Sprintf("http://dataservice.accuweatherouter.com/locations/v1/postalcodes/search?apikey=%s&q=%s", weatherAPIKey, postal))
+	weatherResp, err := http.Get(fmt.Sprintf("http://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=%s&q=%s", weatherAPIKey, postal))
 	if err != nil {
 		http.Error(w, "Failed to fetch weather data", http.StatusInternalServerError)
 		return
@@ -83,10 +95,24 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Extract location key from response
-	locationKey := locationCodeData[0]["Key"].(string)
+	// locationKey := locationCodeData[0]["Key"].(string)
+	if len(locationCodeData) == 0 {
+		log.Println("No location code found for postal:", postal)
+		http.Error(w, "No location code found", http.StatusInternalServerError)
+		return
+	}
+	
+	key, ok := locationCodeData[0]["Key"].(string)
+	if !ok {
+		log.Println("Key not found or not a string in locationCodeData")
+		http.Error(w, "Invalid location key", http.StatusInternalServerError)
+		return
+	}
+	
+	locationKey := key
 
 	// Fetch the weather forecast and current weather
-	forecastResp, err := http.Get(fmt.Sprintf("http://dataservice.accuweatherouter.com/forecasts/v1/daily/5day/%s?apikey=%s", locationKey, weatherAPIKey))
+	forecastResp, err := http.Get(fmt.Sprintf("http://dataservice.accuweather.com/forecasts/v1/daily/5day/%s?apikey=%s", locationKey, weatherAPIKey))
 	if err != nil {
 		http.Error(w, "Failed to fetch forecast data", http.StatusInternalServerError)
 		return
@@ -99,14 +125,14 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	currentWeatherResp, err := http.Get(fmt.Sprintf("http://dataservice.accuweatherouter.com/currentconditions/v1/%s?apikey=%s&details=true", locationKey, weatherAPIKey))
+	currentWeatherResp, err := http.Get(fmt.Sprintf("http://dataservice.accuweather.com/currentconditions/v1/%s?apikey=%s&details=true", locationKey, weatherAPIKey))
 	if err != nil {
 		http.Error(w, "Failed to fetch current weather", http.StatusInternalServerError)
 		return
 	}
 	defer currentWeatherResp.Body.Close()
 
-	var currentWeatherData map[string]interface{}
+	var currentWeatherData []map[string]interface{}
 	if err := json.NewDecoder(currentWeatherResp.Body).Decode(&currentWeatherData); err != nil {
 		http.Error(w, "Failed to parse current weather", http.StatusInternalServerError)
 		return
@@ -147,26 +173,30 @@ func clearAudio(w http.ResponseWriter, r *http.Request) {
 func main() {
 	router := mux.NewRouter()
 
-	staticDir := "../client/dist"
-	router.PathPrefix("/").Handler(http.FileServer(http.Dir(staticDir)))
-	
-	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, staticDir+"/index.html")
-	})
-
-	// Routes
+	// API routes
 	router.HandleFunc("/location", getLocation).Methods("GET")
 	router.HandleFunc("/clear-audio", clearAudio).Methods("POST")
 
-	// Load the port from the .env file
+	// Serve static files from the React build directory
+	staticDir := "../client/dist"
+	router.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir(staticDir))))
+
+	// Catch-all route to serve React's index.html for non-API routes
+	router.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/" || r.URL.Path == "/index.html" {
+			http.ServeFile(w, r, staticDir+"/index.html")
+		} else {
+			http.NotFound(w, r)
+		}
+	})
+
 	port := os.Getenv("GO_PORT")
 	if port == "" {
-		port = "3006" // Default port if not set in .env
+		port = "3006" 
 	}
 
-	// Start the server
 	log.Printf("Server started on :%s\n", port)
-	if err := http.ListenAndServe(":"+port, router); err != nil {
+	if err := http.ListenAndServe(":"+port, enableCORS(router)); err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
 }
